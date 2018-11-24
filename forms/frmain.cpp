@@ -6,6 +6,7 @@
 #include "frmain.h"
 #include "frcontact.h"
 #include "frmanage.h"
+#include "System.NetEncoding.hpp"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -18,7 +19,7 @@ __fastcall Tfmain::Tfmain(TComponent* Owner) : TForm(Owner)
 	myClient.mainEnabling = true;
 
 	if (!myClient.debug) {
-		this->ClientWidth = this->LabelPid->Left + this->PanelContacts->Left + this->PanelContacts->Width;
+		this->ClientWidth = this->PanelContacts->Left + this->PanelContacts->Width + EditFilter->Left;
 	}
 
 	threadclient = new ThreadClient(Client);
@@ -33,15 +34,24 @@ __fastcall Tfmain::Tfmain(TComponent* Owner) : TForm(Owner)
 		N2->Caption = "Установить службу";
 	}
 
-	this->Constraints->MaxWidth = this->Width;
-	this->Constraints->MaxHeight = this->Height;
 	this->Constraints->MinWidth = this->Width;
 	this->Constraints->MinHeight = this->Height;
 
 	PanelLogin->Left = PanelContacts->Left;
 	PanelLogin->Top = PanelContacts->Top;
 
-    TrayIcon->BalloonTitle = "Менеджер удаленного доступа reVisit";
+	TrayIcon->BalloonTitle = "Менеджер удаленного доступа reVisit";
+
+	try{
+		if(ExistService()){
+			while(!WTSRegisterSessionNotification(this->Handle, 0) && !Application->Terminated){
+				::Sleep(100);
+			}
+		}
+	}
+	catch(...){
+		addLog(TYPE_LOG_ERROR, "не получилось зарегистрировать WTSRegisterSessionNotification");
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::N1Click(TObject *Sender)
@@ -53,33 +63,45 @@ void __fastcall Tfmain::TrayIconDblClick(TObject *Sender)
 {
 	if (!this->Visible) {
 		this->Show();
+		Application->Restore();
 		Application->BringToFront();
 	}
 	else {
+        //Application->Minimize();
 		this->Hide();
 	}
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::UpdaterUITimer(TObject *Sender)
 {
-	LabelVersion->Caption = "reClient " + myClient.version;
-	LabelPid->Text = myClient.pid;
-	LabelPass->Text = myClient.pass;
+	Caption = "reVisit " + myClient.version;
+	LabelVersion->Caption = "reVisit " + myClient.version;
+	if (myClient.hide == "1") {
+		LabelPid->Text = "XX:XX:XX:XX";
+		LabelPass->Text = "*****";
+	}
+	else {
+		if( myClient.pid.Length() && myClient.pass.Length() ){
+			if(myClient.autoreg) {
+				threadclient->Send(makeMessage(TMESS_LOCAL_CONT_REVERSE, 2, myClient.autologin, myClient.autopass));
+				myClient.autoreg = 0;
+			}
+			LabelPid->Text = myClient.pid;
+			LabelPass->Text = myClient.pass;
+		}
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::ButtonConnectClick(TObject *Sender)
 {
-//	if(!myClient.client.Length()) {
-//		ShowMessage("У нас нет доступных VNC клиентов!");
-//		return;
-//	}
+	if(!myClient.client.Length()) {
+		ShowMessage("У нас нет доступных VNC клиентов!");
+		return;
+	}
 	threadclient->Send(makeMessage(TMESS_LOCAL_CONNECT, 2, EditPid->Text.c_str(), EditPass->Text.c_str()));
-//	if (!ExecProgram(myClient.client.SubString(0, myClient.client.LastDelimiter(' ')), myClient.client.SubString(myClient.client.LastDelimiter(' '), myClient.client.Length()), false, false) ) {
-//		ShowMessage("Не удалось запустить VNC клиент!");
-//	}
-//	else {
-//		addLog(TYPE_LOG_INFO, "пробуем подключиться");
-//	}
+	if (!StartProgram(myClient.client)){
+		ShowMessage("Не удалось запустить VNC клиент!");
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::Web1Click(TObject *Sender)
@@ -94,9 +116,18 @@ void __fastcall Tfmain::Web1Click(TObject *Sender)
 void __fastcall Tfmain::N2Click(TObject *Sender)
 {
 	if (!ExistService()) {
-		UnicodeString attr = L"-service -install" + UnicodeString(myClient.debug==true?" -debug":"");
+		UnicodeString attr = "-service -install";
+		if (myClient.debug) {
+			attr = attr + UnicodeString(" -debug");
+		}
 		if (myClient.server.Length()) {
-			attr = attr + " -server " + myClient.server;
+			attr = attr + UnicodeString(" -server ") + myClient.server;
+		}
+		if (myClient.pass.Length()) {
+			attr = attr + UnicodeString(" -password ") + myClient.pass;
+		}
+		if (myClient.autoreg){
+            attr = attr + UnicodeString(" -autoreg ") + myClient.autologin + UnicodeString(" ") + myClient.autopass;
 		}
 		if (ExecProgram(Application->ExeName, attr, true, true)) {
 			threadclient->Send(makeMessage(TMESS_LOCAL_TERMINATE, 1, L"1"));
@@ -111,7 +142,8 @@ void __fastcall Tfmain::N2Click(TObject *Sender)
 		bool b = SetCurrentUserThread();
 //ShowMessage((int)b);
 
-		ExecProgram("net", "stop reClientService", true, true);
+		ExecProgram("net", "stop reService", true, true);
+        Sleep(SERVICE_PAUSE_RESTART_UI + SERVICE_WAIT_CYCLE + SERVICE_WAIT_AFTER_CYCLE);
 		if (ExecProgram(Application->ExeName, "-service -uninstall", true, true) ) {
 			threadclient->Send(makeMessage(TMESS_LOCAL_TERMINATE, 1, L"1"));
 			N2->Caption = "Установить службу";
@@ -147,7 +179,7 @@ void Tfmain::addNode(Contact *contact, TTreeNode *parent)
 	}
 }
 //---------------------------------------------------------------------------
-void Tfmain::addNodes(Contact *contact, TTreeNode *parent)
+void Tfmain::addNodes(Contact *contact, TTreeNode *parent, UnicodeString filter)
 {
 	while (contact != NULL) {
 		if(contact->inner != NULL) {
@@ -156,13 +188,22 @@ void Tfmain::addNodes(Contact *contact, TTreeNode *parent)
 			contact->data = (void *)p;
 			p->ImageIndex = 0;
 			p->SelectedIndex = 0;
-			addNodes(contact->inner, p); //наполним папку
+			addNodes(contact->inner, p, filter); //наполним папку
 		}
 		else {
-			addNode(contact, parent); //добавим контакт
+			if( filter.Length() == 0 || contact->caption.LowerCase().Pos(filter.LowerCase()) || cleanPid(contact->pid).Pos(cleanPid(filter)) ) {
+				addNode(contact, parent); //добавим контакт
+			}
 		}
 		contact = contact->next;
 	}
+}
+//---------------------------------------------------------------------------
+void Tfmain::updateTreeView()
+{
+	TreeView->Items->Clear();
+	sortNodes(myClient.contact);
+	addNodes(myClient.contact, NULL, EditFilter->Text);
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::TreeViewDblClick(TObject *Sender)
@@ -175,14 +216,14 @@ void __fastcall Tfmain::TreeViewDblClick(TObject *Sender)
 	if(MH.Contains(htOnItem)) {
 		Contact *c = (Contact *)TreeView->Selected->Data;
 		if (c->type == "node") {
-//			if(!myClient.client.Length()){
-//				ShowMessage("У нас нет доступных VNC клиентов!");
-//				return;
-//			}
+			if(!myClient.client.Length()){
+				ShowMessage("У нас нет доступных VNC клиентов!");
+				return;
+			}
 			threadclient->Send(makeMessage(TMESS_LOCAL_CONN_CONTACT, 1, UnicodeString(c->id).w_str()));
-//			if (!ExecProgram(myClient.client.SubString(0, myClient.client.LastDelimiter(' ')), myClient.client.SubString(myClient.client.LastDelimiter(' '), myClient.client.Length()), false, false) ) {
-//				ShowMessage("Не удалось запустить VNC клиент!");
-//			}
+			if (!StartProgram(myClient.client)){
+				ShowMessage("Не удалось запустить VNC клиент!");
+			}
 			addLog(TYPE_LOG_INFO, "пробуем подключиться");
 		}
 	}
@@ -190,10 +231,23 @@ void __fastcall Tfmain::TreeViewDblClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::FormClose(TObject *Sender, TCloseAction &Action)
 {
+	myOptions.Width = this->Width;
+	myOptions.Height = this->Height;
+	myOptions.Left = this->Left;
+	myOptions.Top = this->Top;
+
+	TURLEncoding *coder = new TURLEncoding;
+	threadclient->Send(makeMessage(TMESS_LOCAL_OPTIONS_UI, 1, coder->Encode(getJsonStringOptions())));
+	coder->Free();
+
+	Sleep(TIME_IDLE);
+
 	if (!ExistService()) {
 		threadclient->Send(makeMessage(TMESS_LOCAL_TERMINATE, 1, L"0"));
 		if(myClient.debug) {
-			MemoLog->Lines->SaveToFile("reclient.log");
+			try {
+				MemoLog->Lines->SaveToFile("revisit.log");
+			}catch(...){ }
 		}
 	}
 }
@@ -213,7 +267,14 @@ void __fastcall Tfmain::ButtonLoginClick(TObject *Sender)
 void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 {
 	switch(Msg.message) {
-		case 160:
+		case WM_WTSSESSION_CHANGE:
+		{
+            if(Msg.wParam == WTS_SESSION_LOGON || Msg.wParam == WTS_SESSION_LOGOFF || Msg.wParam == WTS_CONSOLE_CONNECT || Msg.wParam == WTS_CONSOLE_DISCONNECT){
+				this->Close();
+			}
+			break;
+		}
+		case WM_NCMOUSEMOVE:
 		{
 			myClient.mainEnabling = true;
 			break;
@@ -250,29 +311,31 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 			delete buf;
 			break;
 		}
+		case WM_VISIT_STATUS:
+		{
+			UnicodeString *buf = (UnicodeString *)Msg.lParam;
+			StatusBar->SimpleText = *buf;
+			delete buf;
+			break;
+		}
 		case WM_VISIT_LOG:
 		{
 			UnicodeString *buf = (UnicodeString *)Msg.lParam;
 			if(myClient.debug) {
 				MemoLog->Lines->Add(*buf);
 			}
-            StatusBar->SimpleText = *buf;
 			delete buf;
 			break;
 		}
 		case WM_VISIT_UPDATE:
 		{
-			TreeView->Items->Clear();
-			sortNodes(myClient.contact);
-			addNodes(myClient.contact, NULL);
+			updateTreeView();
 			break;
 		}
 		case WM_VISIT_EXEC:
 		{
 			UnicodeString *buf = (UnicodeString *)Msg.lParam;
-			if (!ExecProgram(buf->SubString(0, buf->LastDelimiter(' ')), buf->SubString(buf->LastDelimiter(' '), buf->Length()), false, false) ) {
-				ShowMessage("Не удалось запустить " + *buf + "!");
-			}
+			StartProgram(*buf);
 			delete buf;
 			break;
 		}
@@ -370,12 +433,37 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 			}
 			break;
 		}
+		case WM_VISIT_SCONT:
+		{
+			Contact *c = (Contact *)Msg.lParam;
+			TTreeNode *p = (TTreeNode*)c->data;
+			if (p) {
+				if (c->type != "fold") {
+					if (c->status) {
+						p->ImageIndex = 2;
+						p->SelectedIndex = 2;
+					}
+					else {
+						p->ImageIndex = 1;
+						p->SelectedIndex = 1;
+					}
+				}
+			}
+			break;
+		}
 		case WM_VISIT_IVNC:
 		{
 			UnicodeString *buf = (UnicodeString *)Msg.lParam;
 			fmanage->ListVNC->Items->Add(*buf);
 			delete buf;
-
+			break;
+		}
+		case WM_VISIT_PROXY:
+		{
+			UnicodeString **buf = (UnicodeString **)Msg.wParam;
+			fmanage->EditProxyServer->Text = *buf[0];
+			fmanage->EditProxyPort->Text = *buf[1];
+			delete buf;
 			break;
 		}
 		case WM_VISIT_INCLNT:
@@ -384,6 +472,7 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 			UnicodeString **buf = (UnicodeString **)Msg.wParam;
 			fmanage->EditHostname->Text = *buf[0];
 			fmanage->EditUptime->Text = *buf[1];
+			fmanage->EditVersion->Text = *buf[2];
 
 			fmanage->ListVNC->ItemIndex = Msg.lParam;
 			fmanage->ButtonReVNC->Enabled = true;
@@ -410,14 +499,27 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 		}
 		case WM_VISIT_SRLOAD:
 		{
-			if (ExecProgram("net", "stop reService", true, true)){
-				if (ExecProgram("net", "start reService", true, true)){
-					addLog(TYPE_LOG_INFO, "перезапустили сервис");
-					this->Close();
-				}
-				addLog(TYPE_LOG_ERROR, "не получилось запустить сервис");
+			ExecProgram("net", "stop reService", true, true);
+			Sleep(SERVICE_PAUSE_RESTART_UI + SERVICE_WAIT_CYCLE + SERVICE_WAIT_AFTER_CYCLE);
+			if (ExecProgram("net", "start reService", true, true)){
+				addLog(TYPE_LOG_INFO, "Перезапустили сервис");
+				this->Close();
 			}
-            addLog(TYPE_LOG_ERROR, "не получилось остановить сервис");
+			addLog(TYPE_LOG_ERROR, "Не получилось перезапустить сервис");
+			break;
+		}
+		case WM_VISIT_APPLY:
+		{
+			if (myOptions.Width && myOptions.Height) {
+                this->Width = myOptions.Width;
+				this->Height = myOptions.Height;
+				this->Left = myOptions.Left;
+				this->Top = myOptions.Top;
+
+				addLog(TYPE_LOG_INFO, "Применили опции ui");
+				break;
+			}
+			addLog(TYPE_LOG_INFO, "Не стали применять опции ui");
 			break;
 		}
 	}
@@ -667,12 +769,17 @@ void __fastcall Tfmain::TreeViewKeyPress(TObject *Sender, System::WideChar &Key)
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::ButtonProfileClick(TObject *Sender)
 {
-    ShowMessage("Не реализовано!");
+	if(!myClient.webprofile.Length()) {
+		ShowMessage("У нас нет информации о WEB!");
+		return;
+	}
+	ExecProgram(myClient.webprofile, "", false, false);
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::N8Click(TObject *Sender)
 {
 	fmanage->contact = NULL;
+	fmanage->ButtonAddProfile->Enabled = true;
 	fmanage->Show();
 }
 //---------------------------------------------------------------------------
@@ -683,12 +790,10 @@ void __fastcall Tfmain::FormCreate(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::StatusBarDblClick(TObject *Sender)
 {
-	this->Constraints->MaxWidth = Screen->Width;
-	fmain->ClientWidth = MemoLog->Left + MemoLog->ClientWidth + OptionClear->Width + 20;
-
-	this->Constraints->MaxWidth = this->Width;
-	this->Constraints->MinWidth = this->Width;
-    myClient.debug = true;
+	if(!myClient.debug) {
+		myClient.debug = true;
+		this->Width = this->Width + 550;
+	}
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::cleanallClick(TObject *Sender)
@@ -701,4 +806,68 @@ void __fastcall Tfmain::reloadcomClick(TObject *Sender)
 	ExecProgram(Application->ExeName, "-reload", true, true);
 }
 //---------------------------------------------------------------------------
+void __fastcall Tfmain::EditFilterChange(TObject *Sender)
+{
+	updateTreeView();
+}
+//---------------------------------------------------------------------------
+void __fastcall Tfmain::ApplicationEventsMinimize(TObject *Sender)
+{
+    this->Hide();
+}
+//---------------------------------------------------------------------------
+void __fastcall Tfmain::LabelPassExit(TObject *Sender)
+{
+	if(!UpdaterUI->Enabled) {
+		UpdaterUI->Enabled = true;
+		threadclient->Send(makeMessage(TMESS_LOCAL_INFO, 1, LabelPass->Text.c_str()));
+	}
+}
+//---------------------------------------------------------------------------
+void __fastcall Tfmain::LabelPassDblClick(TObject *Sender)
+{
+	UpdaterUI->Enabled = false;
+}
+//---------------------------------------------------------------------------
+void __fastcall Tfmain::LabelPassKeyPress(TObject *Sender, System::WideChar &Key)
+{
+	if(Key == 13) {
+		ButtonConnect->SetFocus();
+	}
+}
+//---------------------------------------------------------------------------
+void __fastcall Tfmain::FormResize(TObject *Sender)
+{
+	int padding = EditFilter->Left;
+
+	PanelLogin->Width = this->ClientWidth - PanelLogin->Left - padding - (myClient.debug?520:0);
+	PanelContacts->Width = PanelLogin->Width;
+
+	TreeView->Width = PanelContacts->ClientWidth - TreeView->Left - padding;
+	EditFilter->Width = TreeView->Width;
+	ButtonLogout->Left = EditFilter->Width - ButtonLogout->Width + padding;
+
+	MemoLog->Left = PanelLogin->Left + PanelLogin->Width + padding;
+	ButtonLogSave->Left = MemoLog->Left + MemoLog->Width + padding;
+	ButtonLogClear->Left = MemoLog->Left + MemoLog->Width + padding;
+	cleanall->Left = MemoLog->Left + MemoLog->Width + padding;
+	reloadcom->Left = MemoLog->Left + MemoLog->Width + padding;
+	ButtonOptionsSave->Left = MemoLog->Left + MemoLog->Width + padding;
+	OptionClear->Left = MemoLog->Left + MemoLog->Width + padding;
+
+
+	PanelLogin->Height = this->ClientHeight - PanelLogin->Top - StatusBar->Height - padding;
+	PanelContacts->Height = PanelLogin->Height;
+	MemoLog->Height = PanelContacts->Height;
+
+	ButtonProfile->Top = PanelLogin->ClientHeight - ButtonProfile->Height - padding;
+	ButtonLogout->Top = ButtonProfile->Top;
+	TreeView->Height = ButtonLogout->Top - TreeView->Top - padding;
+
+	PanelCredentials->Left = (PanelLogin->Width - PanelCredentials->Width) / 2;
+    PanelCredentials->Top = (PanelLogin->Height - PanelCredentials->Height) / 2;
+}
+//---------------------------------------------------------------------------
+
+
 

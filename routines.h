@@ -10,6 +10,12 @@
 
 #define COMMUNICATORNAME L"communicator.exe"
 
+#define SERVICE_WAIT_START  5000
+#define SERVICE_WAIT_TERMINAL_SRV 10000
+#define SERVICE_PAUSE_RESTART_UI 1000
+#define SERVICE_WAIT_CYCLE 1500
+#define SERVICE_WAIT_AFTER_CYCLE 500
+
 #define MAX_MESSAGES 16
 #define TIMEOUT_READING 250
 #define TIME_IDLE 250
@@ -45,6 +51,19 @@ UnicodeString type_log[] = {
 #define WM_VISIT_RELOAD WM_USER + 14
 #define WM_VISIT_MCONT  WM_USER + 15
 #define WM_VISIT_SRLOAD WM_USER + 16
+#define WM_VISIT_STATUS WM_USER + 17
+#define WM_VISIT_SCONT  WM_USER + 18
+#define WM_VISIT_APPLY	WM_USER + 19
+#define WM_VISIT_PROXY	WM_USER + 20
+
+
+typedef struct OptionsUI {
+	int Width;
+	int Height;
+	int Left;
+	int Top;
+	bool TrayIcon;
+} Options;
 
 typedef struct Contact {
 	int id;
@@ -65,20 +84,31 @@ typedef struct {
 	UnicodeString pass;
 	UnicodeString version;
 	UnicodeString webpanel; //наша веб морда
-//	UnicodeString client; //команда для запуска vnc клиента
-//	UnicodeString manage; //команда для запуска панели настроек vnc сервера
-    UnicodeString server;
+	UnicodeString webprofile; //веб портал профиля
+	UnicodeString client; //команда для запуска vnc клиента
+	UnicodeString manage; //команда для запуска панели настроек vnc сервера
+    UnicodeString hide; //если идет трансляция, то стоит скрыть наши реквизиты
+	UnicodeString server; //альтернативный сервер
+
+    bool autoreg;
+	UnicodeString autologin;
+	UnicodeString autopass;
 
 	Contact *contact;
 
 	void clean(){
 		this->pid = "";
 		this->pass = "";
-//		this->client = "";
-//		this->manage = "";
+		this->manage = "";
 		this->contact = NULL;
-//		this->mainForm = NULL;
 		this->mainEnabling = true;
+	}
+
+	void initial(){
+		this->autoreg = false;
+		this->autologin = "";
+		this->autopass = "";
+        this->clean();
 	}
 
 	bool debug;
@@ -112,6 +142,8 @@ Message parseMessage(UnicodeString messages);
 
 UnicodeString printMessage(Message message);
 
+bool StartProgram(UnicodeString cmd);
+
 bool ExecProgram(UnicodeString cmd, UnicodeString arg, bool elevate, bool invisible);
 
 bool ExistService();
@@ -137,5 +169,7 @@ void swap(Contact *a, Contact *b);
 void sortNodes(Contact *first);
 
 UnicodeString cleanPid(UnicodeString pid);
+
+UnicodeString getJsonStringOptions();
 
 #endif

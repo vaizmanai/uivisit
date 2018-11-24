@@ -2,7 +2,7 @@ object fmain: Tfmain
   Left = 0
   Top = 0
   BorderIcons = [biSystemMenu, biMinimize]
-  Caption = 'reClient'
+  Caption = 'reVisit'
   ClientHeight = 460
   ClientWidth = 1086
   Color = clBtnFace
@@ -16,6 +16,7 @@ object fmain: Tfmain
   Position = poMainFormCenter
   OnClose = FormClose
   OnCreate = FormCreate
+  OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
   object LabelVersion: TLabel
@@ -28,6 +29,89 @@ object fmain: Tfmain
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -24
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    Visible = False
+  end
+  object Label4: TLabel
+    Left = 48
+    Top = 76
+    Width = 17
+    Height = 19
+    Caption = 'ID'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label5: TLabel
+    Left = 48
+    Top = 137
+    Width = 54
+    Height = 19
+    Caption = #1055#1072#1088#1086#1083#1100
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label6: TLabel
+    Left = 48
+    Top = 243
+    Width = 17
+    Height = 19
+    Caption = 'ID'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label7: TLabel
+    Left = 48
+    Top = 304
+    Width = 54
+    Height = 19
+    Caption = #1055#1072#1088#1086#1083#1100
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label8: TLabel
+    Left = 8
+    Top = 51
+    Width = 241
+    Height = 19
+    Alignment = taCenter
+    AutoSize = False
+    Caption = #1051#1086#1082#1072#1083#1100#1085#1099#1081' '#1082#1086#1084#1087#1100#1102#1090#1077#1088
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label9: TLabel
+    Left = 8
+    Top = 218
+    Width = 241
+    Height = 19
+    Alignment = taCenter
+    AutoSize = False
+    Caption = #1059#1076#1072#1083#1077#1085#1085#1099#1081' '#1082#1086#1084#1087#1100#1102#1090#1077#1088
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
@@ -44,7 +128,7 @@ object fmain: Tfmain
     Visible = False
     object ButtonLogout: TButton
       Left = 198
-      Top = 16
+      Top = 392
       Width = 89
       Height = 25
       Caption = #1042#1099#1093#1086#1076
@@ -53,7 +137,7 @@ object fmain: Tfmain
     end
     object ButtonProfile: TButton
       Left = 8
-      Top = 16
+      Top = 392
       Width = 89
       Height = 25
       Caption = #1055#1088#1086#1092#1080#1083#1100
@@ -62,9 +146,9 @@ object fmain: Tfmain
     end
     object TreeView: TTreeView
       Left = 8
-      Top = 47
+      Top = 39
       Width = 281
-      Height = 367
+      Height = 347
       DoubleBuffered = True
       DragMode = dmAutomatic
       Images = Images
@@ -82,11 +166,12 @@ object fmain: Tfmain
     end
     object ButtonRefresh: TButton
       Left = 103
-      Top = 16
+      Top = 392
       Width = 89
       Height = 25
       Caption = #1054#1073#1085#1086#1074#1080#1090#1100
       TabOrder = 3
+      Visible = False
       OnClick = ButtonRefreshClick
     end
     object Button1: TButton
@@ -97,10 +182,29 @@ object fmain: Tfmain
       Caption = 'Button1'
       TabOrder = 4
     end
+    object EditFilter: TEdit
+      AlignWithMargins = True
+      Left = 8
+      Top = 8
+      Width = 281
+      Height = 25
+      Hint = #1057#1090#1088#1086#1082#1072' '#1087#1086#1080#1089#1082#1072
+      AutoSize = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 5
+      OnChange = EditFilterChange
+    end
   end
   object PanelLogin: TPanel
-    Left = 343
-    Top = 106
+    Left = 303
+    Top = 8
     Width = 298
     Height = 425
     BevelKind = bkTile
@@ -109,68 +213,119 @@ object fmain: Tfmain
     ParentCtl3D = False
     ShowCaption = False
     TabOrder = 6
-    object EditProfileLogin: TMaskEdit
-      Left = 32
-      Top = 136
-      Width = 241
-      Height = 33
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -21
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
+    object PanelCredentials: TPanel
+      Left = 8
+      Top = 66
+      Width = 273
+      Height = 290
+      BevelOuter = bvNone
       TabOrder = 0
-      Text = ''
-      OnKeyPress = EditProfileLoginKeyPress
-    end
-    object EditProfilePass: TMaskEdit
-      Left = 32
-      Top = 175
-      Width = 241
-      Height = 33
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -21
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      PasswordChar = '*'
-      TabOrder = 1
-      Text = ''
-      OnKeyPress = EditProfilePassKeyPress
-    end
-    object ButtonLogin: TButton
-      Left = 32
-      Top = 238
-      Width = 97
-      Height = 25
-      Caption = #1042#1093#1086#1076
-      TabOrder = 3
-      OnClick = ButtonLoginClick
-    end
-    object ButtonRegister: TButton
-      Left = 176
-      Top = 238
-      Width = 97
-      Height = 25
-      Caption = #1056#1077#1075#1080#1089#1090#1088#1072#1094#1080#1103
-      TabOrder = 4
-      OnClick = ButtonRegisterClick
-    end
-    object CheckProfileSave: TCheckBox
-      Left = 32
-      Top = 215
-      Width = 193
-      Height = 17
-      Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100
-      TabOrder = 2
+      object Label2: TLabel
+        Left = 16
+        Top = 130
+        Width = 54
+        Height = 19
+        Caption = #1055#1072#1088#1086#1083#1100
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label1: TLabel
+        Left = 16
+        Top = 67
+        Width = 45
+        Height = 19
+        Caption = 'E-mail'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label3: TLabel
+        Left = -16
+        Top = 27
+        Width = 297
+        Height = 19
+        Alignment = taCenter
+        AutoSize = False
+        Caption = #1042#1093#1086#1076' '#1074' '#1091#1095#1077#1090#1085#1091#1102' '#1079#1072#1087#1080#1089#1100
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object ButtonLogin: TButton
+        Left = 16
+        Top = 221
+        Width = 97
+        Height = 25
+        Caption = #1042#1093#1086#1076
+        TabOrder = 3
+        OnClick = ButtonLoginClick
+      end
+      object CheckProfileSave: TCheckBox
+        Left = 16
+        Top = 198
+        Width = 193
+        Height = 17
+        Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100
+        TabOrder = 2
+      end
+      object ButtonRegister: TButton
+        Left = 160
+        Top = 221
+        Width = 97
+        Height = 25
+        Caption = #1056#1077#1075#1080#1089#1090#1088#1072#1094#1080#1103
+        TabOrder = 4
+        OnClick = ButtonRegisterClick
+      end
+      object EditProfilePass: TMaskEdit
+        Left = 16
+        Top = 155
+        Width = 241
+        Height = 33
+        AutoSize = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -21
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        PasswordChar = '*'
+        TabOrder = 1
+        Text = ''
+        OnKeyPress = EditProfilePassKeyPress
+      end
+      object EditProfileLogin: TMaskEdit
+        Left = 16
+        Top = 91
+        Width = 241
+        Height = 33
+        AutoSize = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -21
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 0
+        Text = ''
+        OnKeyPress = EditProfileLoginKeyPress
+      end
     end
   end
   object EditPass: TMaskEdit
-    Left = 8
-    Top = 183
-    Width = 241
+    Left = 48
+    Top = 326
+    Width = 161
     Height = 33
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -183,9 +338,9 @@ object fmain: Tfmain
     OnKeyPress = EditPassKeyPress
   end
   object EditPid: TMaskEdit
-    Left = 8
-    Top = 144
-    Width = 241
+    Left = 48
+    Top = 265
+    Width = 161
     Height = 33
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -198,9 +353,9 @@ object fmain: Tfmain
     OnKeyPress = EditPidKeyPress
   end
   object LabelPid: TMaskEdit
-    Left = 8
-    Top = 51
-    Width = 241
+    Left = 48
+    Top = 98
+    Width = 161
     Height = 33
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -213,9 +368,9 @@ object fmain: Tfmain
     Text = ''
   end
   object LabelPass: TMaskEdit
-    Left = 8
-    Top = 90
-    Width = 241
+    Left = 48
+    Top = 159
+    Width = 161
     Height = 33
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -225,10 +380,13 @@ object fmain: Tfmain
     ParentFont = False
     TabOrder = 1
     Text = ''
+    OnDblClick = LabelPassDblClick
+    OnExit = LabelPassExit
+    OnKeyPress = LabelPassKeyPress
   end
   object ButtonConnect: TButton
-    Left = 72
-    Top = 222
+    Left = 81
+    Top = 368
     Width = 97
     Height = 25
     Caption = #1055#1086#1076#1082#1083#1102#1095#1077#1085#1080#1077
@@ -236,36 +394,36 @@ object fmain: Tfmain
     OnClick = ButtonConnectClick
   end
   object MemoLog: TMemo
-    Left = 567
-    Top = 40
+    Left = 684
+    Top = 8
     Width = 394
-    Height = 393
+    Height = 425
     ReadOnly = True
     TabOrder = 5
   end
   object ButtonLogSave: TButton
-    Left = 872
+    Left = 967
     Top = 8
-    Width = 89
+    Width = 111
     Height = 25
-    Caption = 'ButtonLogSave'
+    Caption = 'save log'
     TabOrder = 8
   end
   object ButtonLogClear: TButton
-    Left = 777
-    Top = 9
-    Width = 89
+    Left = 967
+    Top = 39
+    Width = 111
     Height = 25
-    Caption = 'ButtonLogClear'
+    Caption = 'clear log'
     TabOrder = 9
     OnClick = ButtonLogClearClick
   end
   object ButtonOptionsSave: TButton
-    Left = 567
-    Top = 8
-    Width = 89
+    Left = 967
+    Top = 379
+    Width = 111
     Height = 25
-    Caption = 'ButtonSave'
+    Caption = 'save options'
     TabOrder = 10
     OnClick = ButtonOptionsSaveClick
   end
@@ -284,13 +442,13 @@ object fmain: Tfmain
     Top = 410
     Width = 111
     Height = 25
-    Caption = 'option clear'
+    Caption = 'clear options'
     TabOrder = 12
     OnClick = OptionClearClick
   end
   object cleanall: TButton
     Left = 967
-    Top = 379
+    Top = 217
     Width = 111
     Height = 25
     Caption = 'clean-all'
@@ -299,7 +457,7 @@ object fmain: Tfmain
   end
   object reloadcom: TButton
     Left = 967
-    Top = 348
+    Top = 248
     Width = 111
     Height = 25
     Caption = 'reload communicator'
@@ -336,6 +494,7 @@ object fmain: Tfmain
   end
   object ApplicationEvents: TApplicationEvents
     OnMessage = ApplicationEventsMessage
+    OnMinimize = ApplicationEventsMinimize
     Left = 736
     Top = 368
   end
@@ -344,17 +503,17 @@ object fmain: Tfmain
     ConnectTimeout = 0
     Host = '127.0.0.1'
     IPVersion = Id_IPv4
-    Port = 32381
+    Port = 32781
     ReadTimeout = 500
     UseNagle = False
     Left = 664
     Top = 304
   end
   object ClientHandler: TIdIOHandlerStack
-    Destination = '127.0.0.1:32381'
+    Destination = '127.0.0.1:32781'
     Host = '127.0.0.1'
     MaxLineAction = maException
-    Port = 32381
+    Port = 32781
     DefaultPort = 0
     UseNagle = False
     ReadTimeout = 500
@@ -380,7 +539,7 @@ object fmain: Tfmain
     Left = 736
     Top = 240
     Bitmap = {
-      494C01010300B400180114001400FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010300B400700114001400FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000500000001400000001002000000000000019
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -621,7 +780,7 @@ object fmain: Tfmain
   object BalloonHint: TBalloonHint
     Style = bhsStandard
     Delay = 200
-    HideAfter = 1000
+    HideAfter = 2500
     Left = 664
     Top = 184
   end

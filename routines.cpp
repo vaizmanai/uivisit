@@ -3,6 +3,8 @@
 #pragma hdrstop
 
 #include "routines.h"
+#include <System.JSON.hpp>
+
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 
@@ -10,7 +12,6 @@
 
 HWND getMainHandle()
 {
-	//return fmain->Handle;
 	return myClient.mainForm;
 }
 
@@ -18,6 +19,11 @@ void addLog(int type, UnicodeString message)
 {
 	UnicodeString *buf = new UnicodeString(type_log[type] + ": " + message);
 	PostMessage(getMainHandle(), WM_VISIT_LOG, 0, (long)buf);
+
+	if (type < TYPE_LOG_DETAIL) {
+		buf = new UnicodeString(type_log[type] + ": " + message);
+		PostMessage(getMainHandle(), WM_VISIT_STATUS, 0, (long)buf);
+	}
 }
 
 Message makeMessage(int type, int count_poles, ...)
@@ -45,38 +51,26 @@ Message parseMessage(UnicodeString messages)
 	message.type = 0;
 	message.count_poles = 0;
 
-	if(messages.Pos('{') != 0){
-		messages = messages.SubString(messages.Pos('{'), messages.Length());
+	TJSONObject *json = (TJSONObject*) TJSONObject::ParseJSONValue(messages);
+	if(!json) {
+		return message;
 	}
 
-	messages = messages.SubString(messages.Pos('"') + 1, messages.Length());
-	UnicodeString tmess = messages.SubString(0, messages.Pos('"') - 1);
+	__try {
+		TJSONPair *TMessage = json->Get("TMessage");
+		message.type = StrToInt(TMessage->JsonValue->Value());
 
-	messages = messages.SubString(messages.Pos(':') + 1, messages.Length());
-	UnicodeString tval = messages.SubString(0, messages.Pos(',') - 1);
-	message.type = tval.ToInt();
-
-	messages = messages.SubString(messages.Pos(',') + 1, messages.Length());
-
-	messages = messages.SubString(messages.Pos('"') + 1, messages.Length());
-	UnicodeString cmess = messages.SubString(0, messages.Pos('"') - 1);
-
-	messages = messages.SubString(messages.Pos('[') + 1, messages.Length());
-	UnicodeString cval = messages.SubString(0, messages.Pos(']') - 1);
-
-	int i = 0;
-	while((messages.Length() > 2) && (i++ < MAX_MESSAGES)){
-		messages = messages.Trim().SubString(messages.Pos('"') + 1, messages.Length());
-		UnicodeString t = messages.SubString(0, messages.Pos('"') - 1);
-
-		if(t != ',' && t != "]"){
-			message.messages[message.count_poles] = t;
-			message.count_poles++;
+		TJSONArray *Messages = (TJSONArray*)json->Get( "Messages" )->JsonValue;
+		message.count_poles = Messages->Size();
+		for(int i = 0; i < Messages->Size(); i++) {
+			message.messages[i] = Messages->Items[i]->Value();
 		}
 
 	}
+	__finally {
+		json->Free();
+	}
 
-	message.count_poles--;
 	return message;
 }
 
@@ -92,6 +86,31 @@ UnicodeString printMessage(Message message)
 	res = res + "]}";
 
 	return res;
+}
+
+bool StartProgram(UnicodeString cmd)
+{
+	UnicodeString name;
+	UnicodeString arg;
+
+	if(cmd.Pos("\\")){
+		UnicodeString p = cmd.SubString(0, cmd.LastDelimiter('\\'));
+		if(!_wchdir(p.w_str())) {
+			UnicodeString s = cmd.SubString(cmd.LastDelimiter('\\'), cmd.Length());
+
+			name = p + s.SubString(0, s.Pos(" "));
+			arg = s.SubString(s.Pos(" "), s.Length());
+		}
+		else{
+			return false;
+		}
+	}
+	else{
+		name = cmd.SubString(0, cmd.LastDelimiter(' '));
+		arg = cmd.SubString(cmd.LastDelimiter(' '), cmd.Length());
+	}
+
+	return ExecProgram(name, arg, false, false);
 }
 
 bool ExecProgram(UnicodeString cmd, UnicodeString arg, bool elevate, bool invisible)
@@ -121,7 +140,7 @@ bool ExistService()
 {
 	TRegistry *r = new TRegistry();
 	r->RootKey = HKEY_LOCAL_MACHINE;
-	bool result = r->OpenKeyReadOnly("SYSTEM\\CurrentControlSet\\services\\reClientService");
+	bool result = r->OpenKeyReadOnly("SYSTEM\\CurrentControlSet\\services\\reService");
 	r->CloseKey();
 	delete r;
 	return result;
@@ -260,69 +279,47 @@ Contact* parseContact(UnicodeString &p)
 	Contact *contact = new Contact;
 	contact->status = 0;
 
-	int a1 = p.Pos(":") + 1;
-	int b1 = p.Pos(",");
-	UnicodeString id = p.SubString(a1, b1 - a1);
-//	UnicodeString id = p.SubString(a1, b1 - a1);
-	contact->id = StrToInt(id);
-
-	p = p.SubString(b1 + 1, p.Length());
-	int a2 = p.Pos(":") + 1;
-	int b2 = p.Pos(",");
-	UnicodeString capt = p.SubString(a2 + 1, b2 - a2 - 2);
-//	UnicodeString capt = p.SubString(a2, b2 - a2 - 1);
-	contact->caption = capt;
-
-	p = p.SubString(b2 + 1, p.Length());
-	int a3 = p.Pos(":") + 1;
-	int b3 = p.Pos(",");
-	UnicodeString type = p.SubString(a3 + 1, b3 - a3 - 2);
-//	UnicodeString type = p.SubString(a3, b3 - a3 - 1);
-	contact->type = type;
-
-	p = p.SubString(b3 + 1, p.Length());
-	int a4 = p.Pos(":") + 1;
-	int b4 = p.Pos(",");
-	UnicodeString pid = p.SubString(a4 + 1, b4 - a4 - 2);
-//	UnicodeString pid = p.SubString(a4, b4 - a4 - 1);
-	contact->pid = pid;
-
-//	p = p.SubString(b4 + 1, p.Length());
-//	int a5 = p.Pos(":") + 1;
-//	int b5 = p.Pos(",");
-//	UnicodeString pas = p.SubString(a5, b5 - a5);
-//	contact->pas = pas;
-
-	p = p.SubString(b4 + 1, p.Length());
-	int a6 = p.Pos(":") + 1;
-	int b6 = p.Pos("null");
-	if (a6 != b6) {
-		p = p.SubString(a6, p.Length());
-		contact->inner = parseContact(p);
-	}
-	else
-	{
-		contact->inner = NULL;
-		b6 = p.Pos(",");
-		p = p.SubString(b6 + 1, p.Length());
+	TJSONObject *json = (TJSONObject*) TJSONObject::ParseJSONValue(p);
+	if(!json) {
+	   return contact;
 	}
 
-	int a7 = p.Pos(":") + 1;
-	int b7 = p.Pos("null");
-	if (a7 != b7) {
-		p = p.SubString(a7, p.Length());
-		contact->next = parseContact(p);
-	}
-	else
-	{
-		b7 = p.Pos('}') + 2;
-		if (b7 < p.Length()) {
-			p = p.SubString(b7, p.Length());
+	__try {
+		TJSONPair *caption = json->Get("Caption");
+		contact->caption = caption->JsonValue->Value();
+
+		TJSONPair *type = json->Get("Type");
+		contact->type = type->JsonValue->Value();
+
+		TJSONPair *pid = json->Get("Pid");
+		contact->pid = pid->JsonValue->Value();
+
+		TJSONPair *id = json->Get("Id");
+		contact->id = StrToInt(id->JsonValue->Value());
+
+		TJSONPair *next = json->Get("Next");
+		String nextv = next->JsonValue->ToString();
+		if (nextv != "null") {
+			contact->next = parseContact(nextv);
 		}
-		contact->next = NULL;
+		else{
+			contact->next = NULL;
+		}
+
+		TJSONPair *inner = json->Get("Inner");
+		String innerv = inner->JsonValue->ToString();
+		if (innerv != "null") {
+			contact->inner = parseContact(innerv);
+		}
+		else {
+			contact->inner = NULL;
+		}
+	}
+	__finally {
+		json->Free();
 	}
 
-    return contact;
+	return contact;
 }
 
 void swapNodes(Contact *a, Contact *b)
@@ -449,4 +446,19 @@ UnicodeString cleanPid(UnicodeString pid)
 	}
 
 	return pid;
+}
+
+UnicodeString getJsonStringOptions()
+{
+	TJSONObject *options = new TJSONObject();
+	options->AddPair( new TJSONPair("Width", myOptions.Width) );
+	options->AddPair( new TJSONPair("Height", myOptions.Height) );
+	options->AddPair( new TJSONPair("Left", myOptions.Left) );
+	options->AddPair( new TJSONPair("Top", myOptions.Top) );
+	options->AddPair( new TJSONPair("TrayIcon", (int)myOptions.TrayIcon) );
+
+	UnicodeString result = options->ToString();
+	options->Free();
+
+	return result;
 }

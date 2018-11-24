@@ -13,23 +13,45 @@
 
 //---------------------------------------------------------------------------
 Client myClient;
+Options myOptions;
 
-USEFORM("service.cpp", reClientService); /* TService: File Type */
+USEFORM("service.cpp", reService); /* TService: File Type */
 USEFORM("forms\frcontact.cpp", fcontact);
 USEFORM("forms\frmanage.cpp", fmanage);
 USEFORM("forms\frmain.cpp", fmain);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 {
+    myClient.initial();
+
+
+	if(wcsstr(attr, L"help"))
+	{
+		UnicodeString help = "Доступные аргументы для запуска:\n\n"
+								"   -clean-all - удалить настройки\n"
+								"   -reload - перезапустить программу\n"
+								"   -close - закрыть экземпляры программы\n"
+								"   -extract - распаковка коммуникатора\n"
+								"   -server address - задать адрес альтернативного сервера\n"
+								"   -password - задать пароль\n"
+								"   -autoreg login password - добавление в профиль учетной записи\n"
+								"   -debug - запуск в режиме отладки\n"
+								"   -minimized - запуск в свернутом виде\n"
+								"   -service - работа в режиме сервис\n"
+								"   -service [install|remove] - установка, удаление сервиса в системе\n";
+		ShowMessage(help);
+		return 0;
+	}
+
 	if(wcsstr(attr, L"clean-all"))
 	{
 		if (ExistService()) {
-			ExecProgram("net", "stop reClientService", true, true);
+			ExecProgram("net", "stop reService", true, true);
 			ExecProgram(ApplicationE->ExeName, "-service -uninstall", true, true);
 
 			TRegistry *r = new TRegistry();
 			r->RootKey = HKEY_LOCAL_MACHINE;
-			r->OpenKeyReadOnly("SYSTEM\\CurrentControlSet\\services\\reClientService");
+			r->OpenKeyReadOnly("SYSTEM\\CurrentControlSet\\services\\reService");
 			UnicodeString p = ExtractFilePath(r->ReadString("ImagePath"));
 			r->CloseKey();
 			delete r;
@@ -42,7 +64,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 
 			//получим информацию о temp
 			if(GetTempPath(MAX_PATH, shellPath)) {
-				wcscat(shellPath, L"\\reClient\\");
+				wcscat(shellPath, L"\\reVisit\\");
 			}
 
 			ExecProgram(UnicodeString(shellPath) + UnicodeString(COMMUNICATORNAME), "clean-all", true, true);
@@ -55,7 +77,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 		if (ExistService()) {
 			TRegistry *r = new TRegistry();
 			r->RootKey = HKEY_LOCAL_MACHINE;
-			r->OpenKeyReadOnly("SYSTEM\\CurrentControlSet\\services\\reClientService");
+			r->OpenKeyReadOnly("SYSTEM\\CurrentControlSet\\services\\reService");
 			UnicodeString p = ExtractFilePath(r->ReadString("ImagePath"));
 			r->CloseKey();
 			delete r;
@@ -68,22 +90,12 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 
 			//получим информацию о temp
 			if(GetTempPath(MAX_PATH, shellPath)) {
-				wcscat(shellPath, L"\\reClient\\");
+				wcscat(shellPath, L"\\reVisit\\");
 			}
 
 			ExecProgram(UnicodeString(shellPath) + UnicodeString(COMMUNICATORNAME), "reload", true, true);
 		}
 		return 0;
-	}
-
-	if(wcsstr(attr, L"server"))
-	{
-		wchar_t *buf = wcsstr(attr, L"server");
-		if (wcslen(buf) > wcslen(L"server")) {
-			buf = buf + wcslen(L"server") ;
-			wchar_t *ipstr = wcstok(buf, L" ");
-			myClient.server = UnicodeString(ipstr);
-		}
 	}
 
 	if(wcsstr(attr, L"close"))
@@ -99,6 +111,44 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 		ptCommunicator->SaveToFile(COMMUNICATORNAME);
 		delete ptCommunicator;
 		return 0;
+	}
+
+	if(wcsstr(attr, L"server"))
+	{
+		wchar_t *n = wcsstr(attr, L"server") + wcslen(L"server ");
+		wchar_t buf[256];
+		n = wcscpy(buf, n);
+		wchar_t *t = wcstok(n, L" =");
+		if(t){
+			myClient.server = UnicodeString(t);
+		}
+	}
+
+	if(wcsstr(attr, L"password"))
+	{
+		wchar_t *n = wcsstr(attr, L"password") + wcslen(L"password ");
+		wchar_t buf[256];
+		n = wcscpy(buf, n);
+		wchar_t *t = wcstok(n, L" =");
+		if(t){
+			myClient.pass = UnicodeString(t);
+		}
+	}
+
+	if(wcsstr(attr, L"autoreg"))
+	{
+		wchar_t *n = wcsstr(attr, L"autoreg") + wcslen(L"autoreg ");
+		wchar_t buf[256];
+		n = wcscpy(buf, n);
+		wchar_t *t = wcstok(n, L" ");
+		if(t) {
+			myClient.autologin = UnicodeString(t);
+			t = wcstok(NULL, L" ");
+			if(t) {
+				myClient.autopass = UnicodeString(t);
+				myClient.autoreg = true;
+			}
+		}
 	}
 
 	if(wcsstr(attr, L"debug"))
@@ -119,7 +169,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 			{
 				ApplicationS->Initialize();
 			}
-			ApplicationS->CreateForm(__classid(TreClientService), &reClientService);
+			ApplicationS->CreateForm(__classid(TreService), &reService);
 			ApplicationS->Run();
 		}
 		catch (Exception &exception)
@@ -147,6 +197,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 
 			ApplicationE->Initialize();
 			ApplicationE->MainFormOnTaskBar = false;
+            ApplicationE->Title = "reVisit";
 			ApplicationE->CreateForm(__classid(Tfmain), &fmain);
 			ApplicationE->CreateForm(__classid(Tfcontact), &fcontact);
 			ApplicationE->CreateForm(__classid(Tfmanage), &fmanage);

@@ -5,9 +5,10 @@
 //---------------------------------------------------------------------------
 
 #include "routines.h"
-
+#include "threadclient.h"
 
 extern Client myClient;
+extern Options myOptions;
 
 #define TMESS_BLANK 0 				//
 
@@ -36,7 +37,11 @@ extern Client myClient;
 #define TMESS_LOCAL_LOG          42 //
 #define TMESS_LOCAL_MYMANAGE	 43 //
 #define TMESS_LOCAL_MYINFO		 44	//
-#define TMESS_LOCAL_MAX		   	 45 //
+#define TMESS_LOCAL_INFO_HIDE    45 //
+#define TMESS_LOCAL_CONT_REVERSE 46 //
+#define TMESS_LOCAL_OPTIONS_UI 	 47 //
+#define TMESS_LOCAL_PROXY	 	 48 //
+#define TMESS_LOCAL_MAX		   	 49 //
 
 
 void processBlank(Message message);
@@ -54,7 +59,9 @@ void processListVNC(Message message);
 void processInfoAnswer(Message message);
 void processReload(Message message);
 void processLog(Message message);
-
+void processHide(Message message);
+void processOptionsUI(Message message);
+void processProxy(Message message);
 
 Process processing[] = {
 	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},
@@ -82,7 +89,11 @@ Process processing[] = {
 	{TMESS_LOCAL_RELOAD, processReload},
 	{TMESS_LOCAL_LOG, processLog},
 	{TMESS_LOCAL_MYMANAGE, processBlank},
-	{TMESS_LOCAL_MYINFO, processBlank}
+	{TMESS_LOCAL_MYINFO, processBlank},
+	{TMESS_LOCAL_INFO_HIDE, processHide},
+	{TMESS_LOCAL_CONT_REVERSE, processBlank},
+	{TMESS_LOCAL_OPTIONS_UI, processOptionsUI},
+	{TMESS_LOCAL_PROXY, processProxy}
 
 };
 

@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="forms"/>
+    <File Path="forms\frcontact.cpp"/>
+    <File Path="forms\frcontact.cpp"/>
+    <File Path="forms\frcontact.dfm"/>
+    <File Path="forms\frcontact.h"/>
+    <File Path="forms\frmain.cpp"/>
+    <File Path="forms\frmain.cpp"/>
+    <File Path="forms\frmain.dfm"/>
+    <File Path="forms\frmain.h"/>
+    <File Path="forms\frmanage.cpp"/>
+    <File Path="forms\frmanage.cpp"/>
+    <File Path="forms\frmanage.dfm"/>
+    <File Path="forms\frmanage.h"/>
+    <File Path="communicator.rc"/>
+    <File Path="processing.cpp"/>
+    <File Path="processing.cpp"/>
+    <File Path="processing.h"/>
+    <File Path="reVisit.cpp"/>
+    <File Path="routines.cpp"/>
+    <File Path="routines.cpp"/>
+    <File Path="routines.h"/>
+    <File Path="service.cpp"/>
+    <File Path="service.cpp"/>
+    <File Path="service.dfm"/>
+    <File Path="service.h"/>
+    <File Path="threadclient.cpp"/>
+    <File Path="threadclient.cpp"/>
+    <File Path="threadclient.h"/>
+  </ProjectSortOrder>
+</BorlandProject>

@@ -42,13 +42,13 @@ void __fastcall Tfcontact::ButtonAddClick(TObject *Sender)
 void Tfcontact::prepAsFolder(bool n)
 {
 	if (n) {
-		this->Caption = "Create group";
-		this->ButtonAdd->Caption = "Create";
+		this->Caption = "Создание группы";
+		this->ButtonAdd->Caption = "Создать";
 	}
 	else
 	{
-		this->Caption = "Edit group";
-		this->ButtonAdd->Caption = "Save";
+		this->Caption = "Редактирование группы";
+		this->ButtonAdd->Caption = "Сохранить";
 	}
 	EditPid->Enabled = false;
 	EditPas->Enabled = false;
@@ -59,13 +59,13 @@ void Tfcontact::prepAsFolder(bool n)
 void Tfcontact::prepAsNode(bool n)
 {
 	if (n) {
-		this->Caption = "Create contact";
-		this->ButtonAdd->Caption = "Create";
+		this->Caption = "Создание контакта";
+		this->ButtonAdd->Caption = "Создать";
 	}
 	else
 	{
-		this->Caption = "Edit contact";
-		this->ButtonAdd->Caption = "Save";
+		this->Caption = "Редактирование контакта";
+		this->ButtonAdd->Caption = "Сохранить";
 	}
 	EditPid->Enabled = true;
 	EditPas->Enabled = true;

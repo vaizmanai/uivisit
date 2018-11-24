@@ -5,6 +5,7 @@
 #include "processing.h"
 #include "System.hpp"
 #include "System.NetEncoding.hpp"
+#include <System.JSON.hpp>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 
@@ -24,11 +25,12 @@ void processInfo(Message message)
 	}
 	myClient.version = message.messages[2];
 	myClient.webpanel = message.messages[3];
+	myClient.webprofile = message.messages[4];
 
-	myClient.profilelogin = message.messages[4];
-	myClient.profilepass = message.messages[5];
+	myClient.profilelogin = message.messages[5];
+	myClient.profilepass = message.messages[6];
 
-	if (myClient.profilelogin.Length() && myClient.profilepass.Length()) {
+	if (myClient.profilelogin.Length() && myClient.profilepass.Length() && myClient.pid.Length()) {
         PostMessage(getMainHandle(), WM_VISIT_ALOGIN, 0, 0);
 	}
 }
@@ -45,8 +47,8 @@ void processInfoClient(Message message)
 {
 	addLog(TYPE_LOG_INFO, "Пришла информация о VNC");
 
-//	myClient.client = message.messages[0];
-//	myClient.manage = message.messages[1];
+	myClient.client = message.messages[0];
+	myClient.manage = message.messages[1];
 }
 
 void processTerminate(Message message)
@@ -65,7 +67,7 @@ void processLogin(Message message)
 
 void processContact(Message message)
 {
-	addLog(TYPE_LOG_INFO, "Пришёл контакт");
+//	addLog(TYPE_LOG_INFO, "Пришёл контакт");
 
 	if (message.messages[1] == "del") {
 		Contact *c = getContact(myClient.contact, StrToInt(message.messages[0]));
@@ -144,11 +146,11 @@ void processContacts(Message message)
 {
 	addLog(TYPE_LOG_INFO, "Пришёл список контактов");
 
-	TURLEncoding *a = new TURLEncoding;
-	UnicodeString r = a->URLDecode(message.messages[0]);
-	delete a;
+	TURLEncoding *coder = new TURLEncoding;
+	UnicodeString contacts = coder->URLDecode(message.messages[0]);
+	coder->Free();
 
-	myClient.contact = parseContact(r);
+	myClient.contact = parseContact(contacts);
 
 	PostMessage(getMainHandle(), WM_VISIT_UPDATE, 0, 0);
 }
@@ -171,18 +173,18 @@ void processExec(Message message)
 
 void processStatus(Message message)
 {
-	addLog(TYPE_LOG_INFO, "Пришел статус контакта");
+//	addLog(TYPE_LOG_INFO, "Пришел статус контакта");
 
 	Contact *c = getContact(myClient.contact, cleanPid(message.messages[0]));
 	if(c != NULL){
 		c->status = StrToInt(message.messages[1]);
-		PostMessage(getMainHandle(), WM_VISIT_CONT, 0, (long)c);
+		PostMessage(getMainHandle(), WM_VISIT_SCONT, 0, (long)c);
 	}
 }
 
 void processListVNC(Message message)
 {
-	addLog(TYPE_LOG_INFO, "Пришла позиция vnc");
+//	addLog(TYPE_LOG_INFO, "Пришла позиция vnc");
 
 	UnicodeString *buf = new UnicodeString(message.messages[0].c_str());
 	PostMessage(getMainHandle(), WM_VISIT_IVNC, 0, (long)buf);
@@ -190,12 +192,17 @@ void processListVNC(Message message)
 
 void processInfoAnswer(Message message)
 {
-	addLog(TYPE_LOG_INFO, "Пришла информация о контакте");
+//	addLog(TYPE_LOG_INFO, "Пришла информация о контакте");
 
-	UnicodeString **buf = new UnicodeString*[2];
+	UnicodeString **buf = new UnicodeString*[3];
 
 	buf[0] = new UnicodeString(message.messages[2].c_str());
 	buf[1] = new UnicodeString(message.messages[3].c_str());
+	if (message.count_poles > 3) {
+		buf[2] = new UnicodeString(message.messages[4].c_str());
+	} else {
+		buf[2] = new UnicodeString("");
+	}
 
 	PostMessage(getMainHandle(), WM_VISIT_INCLNT, WPARAM(buf), StrToInt(message.messages[1]));
 }
@@ -215,4 +222,54 @@ void processReload(Message message)
 void processLog(Message message)
 {
 	addLog(TYPE_LOG_INFO, message.messages[0]);
+}
+
+void processHide(Message message)
+{
+	 myClient.hide = message.messages[0];
+}
+
+void processOptionsUI(Message message)
+{
+	addLog(TYPE_LOG_INFO, "Пришли опции для UI");
+
+	TURLEncoding *coder = new TURLEncoding;
+	UnicodeString options = coder->URLDecode(message.messages[0]);
+	coder->Free();
+
+	TJSONObject *json = (TJSONObject*) TJSONObject::ParseJSONValue(options);
+
+	TJSONPair *pair = json->Get("Width");
+	myOptions.Width = StrToInt(pair->JsonValue->Value());
+
+    pair = json->Get("Width");
+	myOptions.Width = StrToInt(pair->JsonValue->Value());
+
+	pair = json->Get("Height");
+	myOptions.Height = StrToInt(pair->JsonValue->Value());
+
+	pair = json->Get("Left");
+	myOptions.Left = StrToInt(pair->JsonValue->Value());
+
+	pair = json->Get("Top");
+	myOptions.Top = StrToInt(pair->JsonValue->Value());
+
+	pair = json->Get("TrayIcon");
+	myOptions.TrayIcon = StrToInt(pair->JsonValue->Value());
+
+	json->Free();
+
+	PostMessage(getMainHandle(), WM_VISIT_APPLY, 0, 0);
+}
+
+void processProxy(Message message)
+{
+	addLog(TYPE_LOG_INFO, "Пришли настройки прокси");
+
+	UnicodeString **buf = new UnicodeString*[2];
+
+	buf[0] = new UnicodeString(message.messages[0].c_str());
+	buf[1] = new UnicodeString(message.messages[1].c_str());
+
+	PostMessage(getMainHandle(), WM_VISIT_PROXY, WPARAM(buf), 0);
 }

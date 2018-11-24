@@ -48,10 +48,6 @@ __published:	// IDE-managed Components
 	TMenuItem *N2;
 	TImageList *ImageList;
 	TPanel *PanelLogin;
-	TMaskEdit *EditProfileLogin;
-	TMaskEdit *EditProfilePass;
-	TButton *ButtonLogin;
-	TButton *ButtonRegister;
 	TPanel *PanelContacts;
 	TButton *ButtonLogout;
 	TButton *ButtonProfile;
@@ -68,19 +64,32 @@ __published:	// IDE-managed Components
 	TMenuItem *N7;
 	TButton *ButtonOptionsSave;
 	TStatusBar *StatusBar;
-	TCheckBox *CheckProfileSave;
 	TButton *OptionClear;
 	TBalloonHint *BalloonHint;
 	TButton *Button1;
 	TMenuItem *N8;
 	TButton *cleanall;
 	TButton *reloadcom;
-	void __fastcall N1Click(TObject *Sender);
+	TEdit *EditFilter;
+	TLabel *Label4;
+	TLabel *Label5;
+	TLabel *Label6;
+	TLabel *Label7;
+	TLabel *Label8;
+	TLabel *Label9;
+	TPanel *PanelCredentials;
+	TButton *ButtonLogin;
+	TCheckBox *CheckProfileSave;
+	TButton *ButtonRegister;
+	TMaskEdit *EditProfilePass;
+	TLabel *Label2;
+	TMaskEdit *EditProfileLogin;
+	TLabel *Label1;
+	TLabel *Label3;
 	void __fastcall TrayIconDblClick(TObject *Sender);
 	void __fastcall UpdaterUITimer(TObject *Sender);
 	void __fastcall ButtonConnectClick(TObject *Sender);
 	void __fastcall Web1Click(TObject *Sender);
-	void __fastcall N2Click(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall ButtonRegisterClick(TObject *Sender);
 	void __fastcall ButtonLoginClick(TObject *Sender);
@@ -88,13 +97,16 @@ __published:	// IDE-managed Components
 	void __fastcall ButtonLogoutClick(TObject *Sender);
 	void __fastcall TreeViewDblClick(TObject *Sender);
 	void __fastcall TreeViewContextPopup(TObject *Sender, TPoint &MousePos, bool &Handled);
-	void __fastcall N5Click(TObject *Sender);
+	void __fastcall N1Click(TObject *Sender);
+	void __fastcall N2Click(TObject *Sender);
 	void __fastcall N3Click(TObject *Sender);
 	void __fastcall N4Click(TObject *Sender);
+	void __fastcall N5Click(TObject *Sender);
 	void __fastcall N6Click(TObject *Sender);
+	void __fastcall N7Click(TObject *Sender);
+	void __fastcall N8Click(TObject *Sender);
 	void __fastcall ButtonRefreshClick(TObject *Sender);
 	void __fastcall ButtonLogClearClick(TObject *Sender);
-	void __fastcall N7Click(TObject *Sender);
 	void __fastcall ButtonOptionsSaveClick(TObject *Sender);
 	void __fastcall EditPassKeyPress(TObject *Sender, System::WideChar &Key);
 	void __fastcall EditPidKeyPress(TObject *Sender, System::WideChar &Key);
@@ -106,11 +118,17 @@ __published:	// IDE-managed Components
 	void __fastcall TreeViewEdited(TObject *Sender, TTreeNode *Node, UnicodeString &S);
 	void __fastcall TreeViewKeyPress(TObject *Sender, System::WideChar &Key);
 	void __fastcall ButtonProfileClick(TObject *Sender);
-	void __fastcall N8Click(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall StatusBarDblClick(TObject *Sender);
 	void __fastcall cleanallClick(TObject *Sender);
 	void __fastcall reloadcomClick(TObject *Sender);
+	void __fastcall EditFilterChange(TObject *Sender);
+	void __fastcall ApplicationEventsMinimize(TObject *Sender);
+	void __fastcall LabelPassExit(TObject *Sender);
+	void __fastcall LabelPassDblClick(TObject *Sender);
+	void __fastcall LabelPassKeyPress(TObject *Sender, System::WideChar &Key);
+	void __fastcall FormResize(TObject *Sender);
+
 
 
 
@@ -120,13 +138,15 @@ private:	// User declarations
 public:		// User declarations
 	__fastcall Tfmain(TComponent* Owner);
 
+	void updateTreeView();
 	void addNode(Contact *node, TTreeNode *parent);
-	void addNodes(Contact *node, TTreeNode *parent);
+	void addNodes(Contact *node, TTreeNode *parent, UnicodeString filter);
 
 	ThreadClient *threadclient;
 };
 //---------------------------------------------------------------------------
 extern PACKAGE Tfmain *fmain;
 extern Client myClient;
+extern Options myOptions;
 //---------------------------------------------------------------------------
 #endif

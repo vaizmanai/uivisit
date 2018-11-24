@@ -13,6 +13,13 @@ Tfmanage *fmanage;
 __fastcall Tfmanage::Tfmanage(TComponent* Owner) : TForm(Owner)
 {
 	contact = NULL;
+	Panel2->Left = Panel1->Left;
+	Panel3->Left = Panel1->Left;
+	Panel4->Left = Panel1->Left;
+	ClientWidth = Panel1->Width + Panel1->Left + 8;
+	Panel2->Hide();
+	Panel3->Hide();
+	Panel4->Hide();
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmanage::ButtonRefreshClick(TObject *Sender)
@@ -24,6 +31,8 @@ void __fastcall Tfmanage::ButtonRefreshClick(TObject *Sender)
 	{
 		fmain->threadclient->Send(makeMessage(TMESS_LOCAL_MYINFO, 0));
 	}
+
+   	fmain->threadclient->Send(makeMessage(TMESS_LOCAL_PROXY, 0));
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmanage::ButtonReVNCClick(TObject *Sender)
@@ -43,8 +52,12 @@ void __fastcall Tfmanage::FormClose(TObject *Sender, TCloseAction &Action)
 	ButtonUpdate->Enabled = false;
 	ButtonReload->Enabled = false;
 	ButtonRestart->Enabled = false;
+    ButtonAddProfile->Enabled = false;
 	EditHostname->Text = "";
-    EditUptime->Text = "";
+	EditUptime->Text = "";
+	EditVersion->Text = "";
+	EditProxyServer->Text = "";
+    EditProxyPort->Text = "";
 	ListVNC->ItemIndex = -1;
 	contact = NULL;
 }
@@ -92,6 +105,40 @@ void __fastcall Tfmanage::ApplicationEventsShortCut(TWMKey &Msg, bool &Handled)
 void __fastcall Tfmanage::FormShow(TObject *Sender)
 {
 	ButtonRefresh->Click();
+}
+//---------------------------------------------------------------------------
+void __fastcall Tfmanage::ComboBoxChange(TObject *Sender)
+{
+	Panel1->Hide();
+	Panel2->Hide();
+	Panel3->Hide();
+	Panel4->Hide();
+
+	switch (ComboBox->ItemIndex) {
+		case 0:
+			Panel1->Show();
+			break;
+		case 1:
+			Panel2->Show();
+			break;
+		case 2:
+			Panel3->Show();
+			break;
+		case 3:
+			Panel4->Show();
+			break;
+	}
+
+}
+//---------------------------------------------------------------------------
+void __fastcall Tfmanage::ButtonAddProfileClick(TObject *Sender)
+{
+	fmain->threadclient->Send(makeMessage(TMESS_LOCAL_CONT_REVERSE, 2, EditProfileEmail->Text, EditProfilePass->Text));
+}
+//---------------------------------------------------------------------------
+void __fastcall Tfmanage::ButtonProxyApplyClick(TObject *Sender)
+{
+	fmain->threadclient->Send(makeMessage(TMESS_LOCAL_PROXY, 2, EditProxyServer->Text, EditProxyPort->Text));
 }
 //---------------------------------------------------------------------------
 

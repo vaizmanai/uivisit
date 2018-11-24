@@ -7,8 +7,9 @@
 #include <SvcMgr.hpp>
 #include <vcl.h>
 #include "routines.h"
+
 //---------------------------------------------------------------------------
-class TreClientService : public TService
+class TreService : public TService
 {
 __published:    // IDE-managed Components
 	void __fastcall ServiceAfterInstall(TService *Sender);
@@ -16,13 +17,13 @@ __published:    // IDE-managed Components
 	void __fastcall ServiceBeforeUninstall(TService *Sender);
 private:        // User declarations
 public:         // User declarations
-	__fastcall TreClientService(TComponent* Owner);
+	__fastcall TreService(TComponent* Owner);
 	TServiceController __fastcall GetServiceController(void);
 
 	friend void __stdcall ServiceController(unsigned CtrlCode);
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TreClientService *reClientService;
+extern PACKAGE TreService *reService;
 extern Client myClient;
 //---------------------------------------------------------------------------
 #endif

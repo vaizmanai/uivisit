@@ -1,6 +1,6 @@
-object reClientService: TreClientService
+object reService: TreService
   OldCreateOrder = False
-  DisplayName = 'reClientService'
+  DisplayName = 'reVisit'
   AfterInstall = ServiceAfterInstall
   BeforeUninstall = ServiceBeforeUninstall
   OnExecute = ServiceExecute

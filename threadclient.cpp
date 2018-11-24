@@ -31,7 +31,7 @@ void __fastcall ThreadClient::Execute()
 
 			//получим информацию о program files
 			if(GetTempPath(MAX_PATH, shellPath)) {
-				wcscat(shellPath, L"\\reClient\\");
+				wcscat(shellPath, L"\\reVisit\\");
 
 				//создаем папку
 				if(CreateDirectory(shellPath, 0)) {
@@ -50,9 +50,16 @@ void __fastcall ThreadClient::Execute()
 
 				delete ptCommunicator;
 				//запустим его
-				UnicodeString attr;
+                UnicodeString attr;
+				if (myClient.debug) {
+					attr = attr + UnicodeString(" -debug");
+				}
 				if (myClient.server.Length()) {
-                    attr = "server " + myClient.server;
+					attr = attr + UnicodeString(" -server ") + myClient.server;
+				}
+				if (myClient.pass.Length()) {
+					attr = attr + UnicodeString(" -password ") + myClient.pass;
+                    myClient.pass = "";
 				}
 				ExecProgram(UnicodeString(shellPath) + COMMUNICATORNAME, attr, false, !myClient.debug);
 			}
@@ -80,18 +87,18 @@ void __fastcall ThreadClient::Execute()
 		}
 
 		addLog(TYPE_LOG_INFO, "Подключились");
-		
+
 		while(true) {
 			try {
 				UnicodeString data = TCPClient->IOHandler->ReadLn("}", TIMEOUT_READING, MAX_BUFFER, IndyTextEncoding_OSDefault());
 
 				if(data.Length()) {
 					//вот так вот с этим госдеповским утф....
-					data = UTF8ToUnicodeString(data);
+					data = UTF8ToUnicodeString(data + "}");
 
 					Message message = parseMessage(data);
 
-					addLog(TYPE_LOG_INFO, "Новое сообщение");
+//					addLog(TYPE_LOG_INFO, "Новое сообщение");
 
 					if(message.type < TMESS_LOCAL_MAX) {
 						addLog(TYPE_LOG_DETAIL, printMessage(message));
