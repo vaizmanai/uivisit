@@ -3,6 +3,7 @@
 #pragma hdrstop
 
 #include "processing.h"
+#include "languages.h"
 #include "System.hpp"
 #include "System.NetEncoding.hpp"
 #include <System.JSON.hpp>
@@ -39,8 +40,9 @@ void processNotification(Message message)
 {
 	addLog(TYPE_LOG_INFO, "Пришло уведомление");
 
-	UnicodeString *buf = new UnicodeString(message.messages[0]);
-	PostMessage(getMainHandle(), WM_VISIT_NOTIF, 0, (long)buf);
+	//todo ну тут есть нюансы, мы не можем все подряд отображать уведомления, к тому же надо избавиться от уведомлений которые генерирует сервер на русском языке
+//	UnicodeString *buf = new UnicodeString(message.messages[0]);
+//	PostMessage(getMainHandle(), WM_VISIT_NOTIF, 0, (long)buf);
 }
 
 void processInfoClient(Message message)
@@ -240,22 +242,28 @@ void processOptionsUI(Message message)
 	TJSONObject *json = (TJSONObject*) TJSONObject::ParseJSONValue(options);
 
 	TJSONPair *pair = json->Get("Width");
-	myOptions.Width = StrToInt(pair->JsonValue->Value());
+	if(pair) myOptions.Width = StrToInt(pair->JsonValue->Value());
 
     pair = json->Get("Width");
-	myOptions.Width = StrToInt(pair->JsonValue->Value());
+	if(pair) myOptions.Width = StrToInt(pair->JsonValue->Value());
 
 	pair = json->Get("Height");
-	myOptions.Height = StrToInt(pair->JsonValue->Value());
+	if(pair) myOptions.Height = StrToInt(pair->JsonValue->Value());
 
 	pair = json->Get("Left");
-	myOptions.Left = StrToInt(pair->JsonValue->Value());
+	if(pair) myOptions.Left = StrToInt(pair->JsonValue->Value());
 
 	pair = json->Get("Top");
-	myOptions.Top = StrToInt(pair->JsonValue->Value());
+	if(pair) myOptions.Top = StrToInt(pair->JsonValue->Value());
 
 	pair = json->Get("TrayIcon");
-	myOptions.TrayIcon = StrToInt(pair->JsonValue->Value());
+	if(pair) myOptions.TrayIcon = StrToInt(pair->JsonValue->Value());
+
+	pair = json->Get("Lang");
+	if(pair)
+		myOptions.Lang = StrToInt(pair->JsonValue->Value());
+	else
+        myOptions.Lang = 0;
 
 	json->Free();
 
@@ -278,5 +286,35 @@ void processStandartAlert(Message message)
 {
 	addLog(TYPE_LOG_INFO, "Пришло стандартное сообщение");
 
-	PostMessage(getMainHandle(), WM_VISIT_ST_ALR, StrToInt(message.messages[0]), 0);
+	UnicodeString *buf;
+
+	switch (StrToInt(message.messages[0])) {
+		case 1:
+			buf = new UnicodeString(getLangText(L_ERROR_MESSAGE) + getLangText(L_ALERT_NETWORK_MESSAGE) + ".");
+			break;
+		case 2:
+			buf = new UnicodeString(getLangText(L_ERROR_MESSAGE) + getLangText(L_ALERT_PROXY_MESSAGE) + ".");
+			break;
+		case 3:
+			buf = new UnicodeString(getLangText(L_ERROR_MESSAGE) + getLangText(L_ALERT_AUTH_MESSAGE) + ".");
+			break;
+		case 4:
+			buf = new UnicodeString(getLangText(L_ERROR_MESSAGE) + getLangText(L_ALERT_VNC_MESSAGE) + ".");
+			break;
+		case 5:
+			buf = new UnicodeString(getLangText(L_ERROR_MESSAGE) + getLangText(L_ALERT_TIMEOUT_MESSAGE) + ".");
+			break;
+		case 6:
+			buf = new UnicodeString(getLangText(L_ERROR_MESSAGE) + getLangText(L_ALERT_PEER_MESSAGE) + ".");
+			break;
+		case 7:
+			buf = new UnicodeString(getLangText(L_ERROR_MESSAGE) + getLangText(L_ALERT_TYPE_MESSAGE) + ".");
+			break;
+		default:
+			buf = new UnicodeString(getLangText(L_ERROR_MESSAGE) + getLangText(L_ALERT_EMPTY_MESSAGE) + ".");
+			break;
+	}
+
+	PostMessage(getMainHandle(), WM_VISIT_NOTIF, 0, (long)buf);
 }
+

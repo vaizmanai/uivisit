@@ -5,6 +5,7 @@
 //---------------------------------------------------------------------------
 
 #include <System.hpp>
+#include <map>
 #include "Registry.hpp"
 #include "TlHelp32.h"
 
@@ -55,7 +56,6 @@ UnicodeString type_log[] = {
 #define WM_VISIT_SCONT  WM_USER + 18
 #define WM_VISIT_APPLY	WM_USER + 19
 #define WM_VISIT_PROXY	WM_USER + 20
-#define WM_VISIT_ST_ALR	WM_USER + 21
 
 typedef struct OptionsUI {
 	int Width;
@@ -63,6 +63,7 @@ typedef struct OptionsUI {
 	int Left;
 	int Top;
 	bool TrayIcon;
+    int Lang;
 } Options;
 
 typedef struct Contact {
@@ -132,6 +133,7 @@ typedef struct {
 } Process;
 
 
+
 HWND getMainHandle();
 
 void addLog(int type, UnicodeString message);
@@ -171,5 +173,7 @@ void sortNodes(Contact *first);
 UnicodeString cleanPid(UnicodeString pid);
 
 UnicodeString getJsonStringOptions();
+
+UnicodeString getLangText(int item);
 
 #endif

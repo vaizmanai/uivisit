@@ -2,6 +2,10 @@
 <BorlandProject>
 	<ProjectSortOrder AutoSort="0" SortType="0">
     <File Path="forms"/>
+    <File Path="forms\fralert.cpp"/>
+    <File Path="forms\fralert.cpp"/>
+    <File Path="forms\fralert.dfm"/>
+    <File Path="forms\fralert.h"/>
     <File Path="forms\frcontact.cpp"/>
     <File Path="forms\frcontact.cpp"/>
     <File Path="forms\frcontact.dfm"/>
@@ -14,10 +18,6 @@
     <File Path="forms\frmanage.cpp"/>
     <File Path="forms\frmanage.dfm"/>
     <File Path="forms\frmanage.h"/>
-    <File Path="forms\fralert.cpp"/>
-    <File Path="forms\fralert.cpp"/>
-    <File Path="forms\fralert.dfm"/>
-    <File Path="forms\fralert.h"/>
     <File Path="communicator.rc"/>
     <File Path="processing.cpp"/>
     <File Path="processing.cpp"/>
@@ -33,11 +33,17 @@
     <File Path="threadclient.cpp"/>
     <File Path="threadclient.cpp"/>
     <File Path="threadclient.h"/>
+    <File Path="languages.cpp"/>
+    <File Path="languages.cpp"/>
+    <File Path="languages.h"/>
   </ProjectSortOrder>
 	<Transactions>
     <Transaction>2018/11/30 20:28:22.000.841,=C:\bitbucket\reVisit\Unit1.cpp</Transaction>
-    <Transaction>2018/11/30 20:28:42.000.998,C:\bitbucket\reVisit\Unit1.cpp=C:\bitbucket\reVisit\forms\fralert.cpp</Transaction>
-    <Transaction>2018/11/30 20:28:42.000.998,C:\bitbucket\reVisit\Unit1.h=C:\bitbucket\reVisit\forms\fralert.h</Transaction>
-    <Transaction>2018/11/30 20:28:42.000.998,C:\bitbucket\reVisit\Unit1.dfm=C:\bitbucket\reVisit\forms\fralert.dfm</Transaction>
+    <Transaction>2018/11/30 20:28:42.000.998,C:\bitbucket\reVisit\forms\fralert.h=C:\bitbucket\reVisit\Unit1.h</Transaction>
+    <Transaction>2018/11/30 20:28:42.000.998,C:\bitbucket\reVisit\forms\fralert.dfm=C:\bitbucket\reVisit\Unit1.dfm</Transaction>
+    <Transaction>2018/11/30 20:28:42.000.998,C:\bitbucket\reVisit\forms\fralert.cpp=C:\bitbucket\reVisit\Unit1.cpp</Transaction>
+    <Transaction>2018/12/08 19:28:02.000.209,=C:\bitbucket\reVisit\Unit1.cpp</Transaction>
+    <Transaction>2018/12/08 19:28:17.000.523,C:\bitbucket\reVisit\Unit1.cpp=C:\bitbucket\reVisit\languages.cpp</Transaction>
+    <Transaction>2018/12/08 19:28:17.000.523,C:\bitbucket\reVisit\Unit1.h=C:\bitbucket\reVisit\languages.h</Transaction>
   </Transactions>
 </BorlandProject>

@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+п»ї//---------------------------------------------------------------------------
 
 #include <vcl.h>
 #include <SysUtils.hpp>
@@ -16,30 +16,29 @@ Client myClient;
 Options myOptions;
 
 USEFORM("service.cpp", reService); /* TService: File Type */
+USEFORM("forms\fralert.cpp", falert);
 USEFORM("forms\frcontact.cpp", fcontact);
 USEFORM("forms\frmanage.cpp", fmanage);
 USEFORM("forms\frmain.cpp", fmain);
-USEFORM("forms\fralert.cpp", falert);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 {
     myClient.initial();
 
-
 	if(wcsstr(attr, L"help"))
 	{
-		UnicodeString help = "Доступные аргументы для запуска:\n\n"
-								"   -clean-all - удалить настройки\n"
-								"   -reload - перезапустить программу\n"
-								"   -close - закрыть экземпляры программы\n"
-								"   -extract - распаковка коммуникатора\n"
-								"   -server address - задать адрес альтернативного сервера\n"
-								"   -password - задать пароль\n"
-								"   -autoreg login password - добавление в профиль учетной записи\n"
-								"   -debug - запуск в режиме отладки\n"
-								"   -minimized - запуск в свернутом виде\n"
-								"   -service - работа в режиме сервис\n"
-								"   -service [install|remove] - установка, удаление сервиса в системе\n";
+		UnicodeString help = "Ж’РѕСЃС‚СѓРїРЅС‹Рµ Р°СЂРіСѓРјРµРЅС‚С‹ РґР»В¤ Р·Р°РїСѓСЃРєР°:\n\n"
+								"   -clean-all - СѓРґР°Р»РёС‚СЊ РЅР°СЃС‚СЂРѕР№РєРё\n"
+								"   -reload - РїРµСЂРµР·Р°РїСѓСЃС‚РёС‚СЊ РїСЂРѕРіСЂР°РјРјСѓ\n"
+								"   -close - Р·Р°РєСЂС‹С‚СЊ СЌРєР·РµРјРїР»В¤СЂС‹ РїСЂРѕРіСЂР°РјРјС‹\n"
+								"   -extract - СЂР°СЃРїР°РєРѕРІРєР° РєРѕРјРјСѓРЅРёРєР°С‚РѕСЂР°\n"
+								"   -server address - Р·Р°РґР°С‚СЊ Р°РґСЂРµСЃ Р°Р»СЊС‚РµСЂРЅР°С‚РёРІРЅРѕРіРѕ СЃРµСЂРІРµСЂР°\n"
+								"   -password - Р·Р°РґР°С‚СЊ РїР°СЂРѕР»СЊ\n"
+								"   -autoreg login password - РґРѕР±Р°РІР»РµРЅРёРµ РІ РїСЂРѕС„РёР»СЊ СѓС‡РµС‚РЅРѕР№ Р·Р°РїРёСЃРё\n"
+								"   -debug - Р·Р°РїСѓСЃРє РІ СЂРµР¶РёРјРµ РѕС‚Р»Р°РґРєРё\n"
+								"   -minimized - Р·Р°РїСѓСЃРє РІ СЃРІРµСЂРЅСѓС‚РѕРј РІРёРґРµ\n"
+								"   -service - СЂР°Р±РѕС‚Р° РІ СЂРµР¶РёРјРµ СЃРµСЂРІРёСЃ\n"
+								"   -service [install|remove] - СѓСЃС‚Р°РЅРѕРІРєР°, СѓРґР°Р»РµРЅРёРµ СЃРµСЂРІРёСЃР° РІ СЃРёСЃС‚РµРјРµ\n";
 		ShowMessage(help);
 		return 0;
 	}
@@ -63,7 +62,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 		{
 			wchar_t shellPath[MAX_PATH] = {0};
 
-			//получим информацию о temp
+			//РїРѕР»СѓС‡РёРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ temp
 			if(GetTempPath(MAX_PATH, shellPath)) {
 				wcscat(shellPath, L"\\reVisit\\");
 			}
@@ -89,7 +88,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 		{
 			wchar_t shellPath[MAX_PATH] = {0};
 
-			//получим информацию о temp
+			//РїРѕР»СѓС‡РёРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ temp
 			if(GetTempPath(MAX_PATH, shellPath)) {
 				wcscat(shellPath, L"\\reVisit\\");
 			}

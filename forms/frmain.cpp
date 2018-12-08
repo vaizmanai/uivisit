@@ -218,7 +218,7 @@ void __fastcall Tfmain::TreeViewDblClick(TObject *Sender)
 	TPoint p;
 	GetCursorPos(&p);
 	p = TreeView->ScreenToClient(p);
-12345
+
 	THitTests MH = TreeView->GetHitTestInfoAt(p.x, p.y);
 	if(MH.Contains(htOnItem)) {
 		Contact *c = (Contact *)TreeView->Selected->Data;

@@ -166,6 +166,10 @@
             <DependentOn>forms\frmanage.h</DependentOn>
             <BuildOrder>9</BuildOrder>
         </CppCompile>
+        <CppCompile Include="languages.cpp">
+            <DependentOn>languages.h</DependentOn>
+            <BuildOrder>10</BuildOrder>
+        </CppCompile>
         <CppCompile Include="processing.cpp">
             <DependentOn>processing.h</DependentOn>
             <BuildOrder>6</BuildOrder>
@@ -189,10 +193,10 @@
             <BuildOrder>5</BuildOrder>
         </CppCompile>
         <FormResources Include="service.dfm"/>
+        <FormResources Include="forms\fralert.dfm"/>
         <FormResources Include="forms\frcontact.dfm"/>
         <FormResources Include="forms\frmanage.dfm"/>
         <FormResources Include="forms\frmain.dfm"/>
-        <FormResources Include="forms\fralert.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
