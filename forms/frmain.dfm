@@ -174,14 +174,6 @@ object fmain: Tfmain
       Visible = False
       OnClick = ButtonRefreshClick
     end
-    object Button1: TButton
-      Left = -176
-      Top = 288
-      Width = 75
-      Height = 25
-      Caption = 'Button1'
-      TabOrder = 4
-    end
     object EditFilter: TEdit
       AlignWithMargins = True
       Left = 8
@@ -198,12 +190,12 @@ object fmain: Tfmain
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 5
+      TabOrder = 4
       OnChange = EditFilterChange
     end
   end
   object PanelLogin: TPanel
-    Left = 303
+    Left = 287
     Top = 8
     Width = 298
     Height = 425
@@ -380,6 +372,7 @@ object fmain: Tfmain
     ParentFont = False
     TabOrder = 1
     Text = ''
+    OnChange = LabelPassChange
     OnDblClick = LabelPassDblClick
     OnExit = LabelPassExit
     OnKeyPress = LabelPassKeyPress
@@ -539,7 +532,7 @@ object fmain: Tfmain
     Left = 736
     Top = 240
     Bitmap = {
-      494C01010300B400700114001400FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010300B4007C0114001400FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000500000001400000001002000000000000019
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

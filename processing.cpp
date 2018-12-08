@@ -273,3 +273,10 @@ void processProxy(Message message)
 
 	PostMessage(getMainHandle(), WM_VISIT_PROXY, WPARAM(buf), 0);
 }
+
+void processStandartAlert(Message message)
+{
+	addLog(TYPE_LOG_INFO, "Пришло стандартное сообщение");
+
+	PostMessage(getMainHandle(), WM_VISIT_ST_ALR, StrToInt(message.messages[0]), 0);
+}

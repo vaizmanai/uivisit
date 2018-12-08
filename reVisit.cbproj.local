@@ -14,6 +14,10 @@
     <File Path="forms\frmanage.cpp"/>
     <File Path="forms\frmanage.dfm"/>
     <File Path="forms\frmanage.h"/>
+    <File Path="forms\fralert.cpp"/>
+    <File Path="forms\fralert.cpp"/>
+    <File Path="forms\fralert.dfm"/>
+    <File Path="forms\fralert.h"/>
     <File Path="communicator.rc"/>
     <File Path="processing.cpp"/>
     <File Path="processing.cpp"/>
@@ -30,4 +34,10 @@
     <File Path="threadclient.cpp"/>
     <File Path="threadclient.h"/>
   </ProjectSortOrder>
+	<Transactions>
+    <Transaction>2018/11/30 20:28:22.000.841,=C:\bitbucket\reVisit\Unit1.cpp</Transaction>
+    <Transaction>2018/11/30 20:28:42.000.998,C:\bitbucket\reVisit\Unit1.cpp=C:\bitbucket\reVisit\forms\fralert.cpp</Transaction>
+    <Transaction>2018/11/30 20:28:42.000.998,C:\bitbucket\reVisit\Unit1.h=C:\bitbucket\reVisit\forms\fralert.h</Transaction>
+    <Transaction>2018/11/30 20:28:42.000.998,C:\bitbucket\reVisit\Unit1.dfm=C:\bitbucket\reVisit\forms\fralert.dfm</Transaction>
+  </Transactions>
 </BorlandProject>

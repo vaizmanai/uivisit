@@ -6,6 +6,7 @@
 #include "frmain.h"
 #include "frcontact.h"
 #include "frmanage.h"
+#include "fralert.h"
 #include "System.NetEncoding.hpp"
 
 //---------------------------------------------------------------------------
@@ -74,8 +75,14 @@ void __fastcall Tfmain::TrayIconDblClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::UpdaterUITimer(TObject *Sender)
 {
-	Caption = "reVisit " + myClient.version;
-	LabelVersion->Caption = "reVisit " + myClient.version;
+	if(myClient.version != "" && myClient.version != "0"){
+		Caption = "reVisit " + myClient.version;
+	}
+	else{
+		Caption = "reVisit";
+	}
+	LabelVersion->Caption = Caption;
+
 	if (myClient.hide == "1") {
 		LabelPid->Text = "XX:XX:XX:XX";
 		LabelPass->Text = "*****";
@@ -99,9 +106,9 @@ void __fastcall Tfmain::ButtonConnectClick(TObject *Sender)
 		return;
 	}
 	threadclient->Send(makeMessage(TMESS_LOCAL_CONNECT, 2, EditPid->Text.c_str(), EditPass->Text.c_str()));
-	if (!StartProgram(myClient.client)){
-		ShowMessage("Не удалось запустить VNC клиент!");
-	}
+//	if (!StartProgram(myClient.client)){
+//		ShowMessage("Не удалось запустить VNC клиент!");
+//	}
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::Web1Click(TObject *Sender)
@@ -211,7 +218,7 @@ void __fastcall Tfmain::TreeViewDblClick(TObject *Sender)
 	TPoint p;
 	GetCursorPos(&p);
 	p = TreeView->ScreenToClient(p);
-
+12345
 	THitTests MH = TreeView->GetHitTestInfoAt(p.x, p.y);
 	if(MH.Contains(htOnItem)) {
 		Contact *c = (Contact *)TreeView->Selected->Data;
@@ -221,9 +228,9 @@ void __fastcall Tfmain::TreeViewDblClick(TObject *Sender)
 				return;
 			}
 			threadclient->Send(makeMessage(TMESS_LOCAL_CONN_CONTACT, 1, UnicodeString(c->id).w_str()));
-			if (!StartProgram(myClient.client)){
-				ShowMessage("Не удалось запустить VNC клиент!");
-			}
+//			if (!StartProgram(myClient.client)){
+//				ShowMessage("Не удалось запустить VNC клиент!");
+//			}
 			addLog(TYPE_LOG_INFO, "пробуем подключиться");
 		}
 	}
@@ -303,9 +310,10 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 			UnicodeString *buf = (UnicodeString *)Msg.lParam;
 //			Application->MessageBoxW(buf->w_str(), L"Уведомление", 0);
 
-			BalloonHint->Title = "Уведомление";
-			BalloonHint->Description = *buf;
-			BalloonHint->ShowHint(this);
+//			BalloonHint->Title = "Уведомление";
+//			BalloonHint->Description = *buf;
+//			BalloonHint->ShowHint(this);
+			falert->ShowMessage(*buf);
 
 			StatusBar->SimpleText = "Уведомление: " + *buf;
 			delete buf;
@@ -820,8 +828,9 @@ void __fastcall Tfmain::LabelPassExit(TObject *Sender)
 {
 	if(!UpdaterUI->Enabled) {
 		UpdaterUI->Enabled = true;
-		threadclient->Send(makeMessage(TMESS_LOCAL_INFO, 1, LabelPass->Text.c_str()));
+		if(this->Tag) threadclient->Send(makeMessage(TMESS_LOCAL_INFO, 1, LabelPass->Text.c_str()));
 	}
+	this->Tag = 0;
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::LabelPassDblClick(TObject *Sender)
@@ -868,6 +877,9 @@ void __fastcall Tfmain::FormResize(TObject *Sender)
     PanelCredentials->Top = (PanelLogin->Height - PanelCredentials->Height) / 2;
 }
 //---------------------------------------------------------------------------
-
-
+void __fastcall Tfmain::LabelPassChange(TObject *Sender)
+{
+    this->Tag = 1;
+}
+//---------------------------------------------------------------------------
 

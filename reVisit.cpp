@@ -19,6 +19,7 @@ USEFORM("service.cpp", reService); /* TService: File Type */
 USEFORM("forms\frcontact.cpp", fcontact);
 USEFORM("forms\frmanage.cpp", fmanage);
 USEFORM("forms\frmain.cpp", fmain);
+USEFORM("forms\fralert.cpp", falert);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 {
@@ -197,10 +198,11 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 
 			ApplicationE->Initialize();
 			ApplicationE->MainFormOnTaskBar = false;
-            ApplicationE->Title = "reVisit";
+			ApplicationE->Title = "reVisit";
 			ApplicationE->CreateForm(__classid(Tfmain), &fmain);
 			ApplicationE->CreateForm(__classid(Tfcontact), &fcontact);
 			ApplicationE->CreateForm(__classid(Tfmanage), &fmanage);
+			ApplicationE->CreateForm(__classid(Tfalert), &falert);
 			ApplicationE->Run();
 		}
 		catch (Exception &exception)

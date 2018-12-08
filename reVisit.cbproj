@@ -142,6 +142,12 @@
             <Form>communicator.res</Form>
             <BuildOrder>7</BuildOrder>
         </ResourceCompile>
+        <CppCompile Include="forms\fralert.cpp">
+            <Form>falert</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>forms\fralert.h</DependentOn>
+            <BuildOrder>9</BuildOrder>
+        </CppCompile>
         <CppCompile Include="forms\frcontact.cpp">
             <Form>fcontact</Form>
             <FormType>dfm</FormType>
@@ -186,6 +192,7 @@
         <FormResources Include="forms\frcontact.dfm"/>
         <FormResources Include="forms\frmanage.dfm"/>
         <FormResources Include="forms\frmain.dfm"/>
+        <FormResources Include="forms\fralert.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

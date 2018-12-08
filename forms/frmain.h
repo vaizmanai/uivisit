@@ -66,7 +66,6 @@ __published:	// IDE-managed Components
 	TStatusBar *StatusBar;
 	TButton *OptionClear;
 	TBalloonHint *BalloonHint;
-	TButton *Button1;
 	TMenuItem *N8;
 	TButton *cleanall;
 	TButton *reloadcom;
@@ -128,8 +127,7 @@ __published:	// IDE-managed Components
 	void __fastcall LabelPassDblClick(TObject *Sender);
 	void __fastcall LabelPassKeyPress(TObject *Sender, System::WideChar &Key);
 	void __fastcall FormResize(TObject *Sender);
-
-
+	void __fastcall LabelPassChange(TObject *Sender);
 
 
 private:	// User declarations

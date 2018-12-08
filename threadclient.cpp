@@ -109,7 +109,7 @@ void __fastcall ThreadClient::Execute()
 						processing[message.type].process(message);
 					}
 					else {
-						addLog(TYPE_LOG_ERROR, "Не правильный тип сообщения");
+						addLog(TYPE_LOG_ERROR, "Не правильный тип сообщения " + IntToStr(message.type));
 					}
 				}
 
