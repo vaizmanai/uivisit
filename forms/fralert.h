@@ -22,6 +22,7 @@ private:	// User declarations
     short counter;
 public:		// User declarations
 	__fastcall Tfalert(TComponent* Owner);
+    void applyLangUI();
 	void __fastcall ShowMessage(String message);
 };
 //---------------------------------------------------------------------------

@@ -6,3 +6,6 @@ forms/__history
 *.err
 *.stat
 *.res
+log.txt
+vnc.list
+vnc

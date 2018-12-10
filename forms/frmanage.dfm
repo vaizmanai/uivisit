@@ -5,7 +5,7 @@ object fmanage: Tfmanage
   BorderStyle = bsDialog
   Caption = #1059#1087#1088#1072#1074#1083#1077#1085#1080#1077
   ClientHeight = 258
-  ClientWidth = 973
+  ClientWidth = 1011
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,8 +20,8 @@ object fmanage: Tfmanage
   PixelsPerInch = 96
   TextHeight = 13
   object ButtonRefresh: TButton
-    Left = 28
-    Top = 216
+    Left = 895
+    Top = 12
     Width = 97
     Height = 25
     Caption = #1047#1072#1087#1088#1086#1089#1080#1090#1100
@@ -64,6 +64,14 @@ object fmanage: Tfmanage
       AutoSize = False
       Caption = #1042#1077#1088#1089#1080#1103' reVisit'
     end
+    object Label9: TLabel
+      Left = 16
+      Top = 166
+      Width = 143
+      Height = 13
+      AutoSize = False
+      Caption = #1071#1079#1099#1082' '#1080#1085#1090#1077#1088#1092#1077#1081#1089#1072
+    end
     object EditUptime: TEdit
       Left = 16
       Top = 89
@@ -87,6 +95,15 @@ object fmanage: Tfmanage
       Height = 21
       ReadOnly = True
       TabOrder = 2
+    end
+    object ListLanguages: TComboBox
+      Left = 16
+      Top = 185
+      Width = 143
+      Height = 21
+      TabOrder = 3
+      Text = 'ListVNC'
+      OnChange = ListLanguagesChange
     end
   end
   object Panel2: TPanel
@@ -211,10 +228,10 @@ object fmanage: Tfmanage
     end
   end
   object ComboBox: TComboBox
-    Left = 8
+    Left = 7
     Top = 8
-    Width = 145
-    Height = 241
+    Width = 146
+    Height = 242
     AutoComplete = False
     Style = csSimple
     DoubleBuffered = True

@@ -263,7 +263,7 @@ void processOptionsUI(Message message)
 	if(pair)
 		myOptions.Lang = StrToInt(pair->JsonValue->Value());
 	else
-        myOptions.Lang = 0;
+        applyLangBySystem();
 
 	json->Free();
 
@@ -290,28 +290,40 @@ void processStandartAlert(Message message)
 
 	switch (StrToInt(message.messages[0])) {
 		case 1:
-			buf = new UnicodeString(getLangText(L_ERROR_MESSAGE) + getLangText(L_ALERT_NETWORK_MESSAGE) + ".");
+			buf = new UnicodeString(getFullText(L_ERROR_MESSAGE, L_ALERT_NETWORK_MESSAGE, L_END));
 			break;
 		case 2:
-			buf = new UnicodeString(getLangText(L_ERROR_MESSAGE) + getLangText(L_ALERT_PROXY_MESSAGE) + ".");
+			buf = new UnicodeString(getFullText(L_ERROR_MESSAGE, L_ALERT_PROXY_MESSAGE, L_END));
 			break;
 		case 3:
-			buf = new UnicodeString(getLangText(L_ERROR_MESSAGE) + getLangText(L_ALERT_AUTH_MESSAGE) + ".");
+			buf = new UnicodeString(getFullText(L_ERROR_MESSAGE, L_ALERT_AUTH_MESSAGE, L_END));
 			break;
 		case 4:
-			buf = new UnicodeString(getLangText(L_ERROR_MESSAGE) + getLangText(L_ALERT_VNC_MESSAGE) + ".");
+			buf = new UnicodeString(getFullText(L_ERROR_MESSAGE, L_ALERT_VNC_MESSAGE, L_END));
 			break;
 		case 5:
-			buf = new UnicodeString(getLangText(L_ERROR_MESSAGE) + getLangText(L_ALERT_TIMEOUT_MESSAGE) + ".");
+			buf = new UnicodeString(getFullText(L_ERROR_MESSAGE, L_ALERT_TIMEOUT_MESSAGE, L_END));
 			break;
 		case 6:
-			buf = new UnicodeString(getLangText(L_ERROR_MESSAGE) + getLangText(L_ALERT_PEER_MESSAGE) + ".");
+			buf = new UnicodeString(getFullText(L_ERROR_MESSAGE, L_ALERT_PEER_MESSAGE, L_END));
 			break;
 		case 7:
-			buf = new UnicodeString(getLangText(L_ERROR_MESSAGE) + getLangText(L_ALERT_TYPE_MESSAGE) + ".");
+			buf = new UnicodeString(getFullText(L_ERROR_MESSAGE, L_ALERT_TYPE_MESSAGE, L_END));
+			break;
+		case 8:
+			buf = new UnicodeString(getFullText(L_ERROR_MESSAGE, L_ALERT_AUTH_FAIL_MESSAGE, L_END));
+			break;
+		case 9:
+			buf = new UnicodeString(getFullText(L_ERROR_MESSAGE, L_ALERT_REG_FAIL_MESSAGE, L_END));
+			break;
+		case 10:
+			buf = new UnicodeString(getFullText(L_ERROR_MESSAGE, L_ALERT_REG_MAIL_MESSAGE, L_END));
+			break;
+		case 11:
+			buf = new UnicodeString(getFullText(L_ERROR_MESSAGE, L_ALERT_REG_SUCC_MESSAGE, L_END));
 			break;
 		default:
-			buf = new UnicodeString(getLangText(L_ERROR_MESSAGE) + getLangText(L_ALERT_EMPTY_MESSAGE) + ".");
+			buf = new UnicodeString(getFullText(L_ERROR_MESSAGE, L_ALERT_EMPTY_MESSAGE, L_END));
 			break;
 	}
 

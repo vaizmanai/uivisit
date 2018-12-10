@@ -456,7 +456,7 @@ UnicodeString getJsonStringOptions()
 	options->AddPair( new TJSONPair("Left", myOptions.Left) );
 	options->AddPair( new TJSONPair("Top", myOptions.Top) );
 	options->AddPair( new TJSONPair("TrayIcon", (int)myOptions.TrayIcon) );
-	options->AddPair( new TJSONPair("Lang", myOptions.Lang) );
+	options->AddPair( new TJSONPair("Lang", (int)myOptions.Lang) );
 
 	UnicodeString result = options->ToString();
 	options->Free();

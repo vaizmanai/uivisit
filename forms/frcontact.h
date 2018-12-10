@@ -38,6 +38,7 @@ private:	// User declarations
 public:		// User declarations
 	__fastcall Tfcontact(TComponent* Owner);
 
+    void applyLangUI();
 	void prepAsFolder(bool n);
 	void prepAsNode(bool n);
 

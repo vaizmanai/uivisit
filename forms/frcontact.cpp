@@ -5,6 +5,7 @@
 
 #include "frcontact.h"
 #include "frmain.h"
+#include "languages.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
@@ -15,6 +16,7 @@ __fastcall Tfcontact::Tfcontact(TComponent* Owner) : TForm(Owner)
     id = -1;
 	parent = "";
 	fold = false;
+	applyLangUI();
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfcontact::ButtonAddClick(TObject *Sender)
@@ -42,13 +44,13 @@ void __fastcall Tfcontact::ButtonAddClick(TObject *Sender)
 void Tfcontact::prepAsFolder(bool n)
 {
 	if (n) {
-		this->Caption = "Создание группы";
-		this->ButtonAdd->Caption = "Создать";
+		this->Caption = getText(L_CREATE_GROUP); //"Создание группы";
+		this->ButtonAdd->Caption = getText(L_CREATE);
 	}
 	else
 	{
-		this->Caption = "Редактирование группы";
-		this->ButtonAdd->Caption = "Сохранить";
+		this->Caption = getText(L_EDIT_GROUP);
+		this->ButtonAdd->Caption = getText(L_SAVE);
 	}
 	EditPid->Enabled = false;
 	EditPas->Enabled = false;
@@ -59,13 +61,13 @@ void Tfcontact::prepAsFolder(bool n)
 void Tfcontact::prepAsNode(bool n)
 {
 	if (n) {
-		this->Caption = "Создание контакта";
-		this->ButtonAdd->Caption = "Создать";
+		this->Caption = getText(L_CREATE_ITEM); //"Создание контакта";
+		this->ButtonAdd->Caption = getText(L_CREATE);
 	}
 	else
 	{
-		this->Caption = "Редактирование контакта";
-		this->ButtonAdd->Caption = "Сохранить";
+		this->Caption = getText(L_EDIT_ITEM); //"Редактирование контакта";
+		this->ButtonAdd->Caption = getText(L_SAVE);
 	}
 	EditPid->Enabled = true;
 	EditPas->Enabled = true;
@@ -80,5 +82,16 @@ void __fastcall Tfcontact::ApplicationEventsShortCut(TWMKey &Msg, bool &Handled)
 	}
 }
 //---------------------------------------------------------------------------
+void Tfcontact::applyLangUI()
+{
+	Caption = getText(L_CREATE_ITEM);
 
+	Label1->Caption = getText(L_CAPTION_ITEM);
+	Label2->Caption = getText(L_PASSWORD);
+	Label3->Caption = getText(L_ID);
+	Label4->Caption = getText(L_PARENT);
+
+	ButtonAdd->Caption = getText(L_SAVE);
+}
+//---------------------------------------------------------------------------
 

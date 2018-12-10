@@ -7,6 +7,7 @@
 #include "frcontact.h"
 #include "frmanage.h"
 #include "fralert.h"
+#include "languages.h"
 #include "System.NetEncoding.hpp"
 
 //---------------------------------------------------------------------------
@@ -19,6 +20,8 @@ __fastcall Tfmain::Tfmain(TComponent* Owner) : TForm(Owner)
 {
 	myClient.mainEnabling = true;
 
+	applyLangBySystem();
+
 	if (!myClient.debug) {
 		this->ClientWidth = this->PanelContacts->Left + this->PanelContacts->Width + EditFilter->Left;
 	}
@@ -28,12 +31,7 @@ __fastcall Tfmain::Tfmain(TComponent* Owner) : TForm(Owner)
     TIcon* iconsh = new TIcon();
 	iconsh->Handle = LoadIcon(0, IDI_SHIELD);
 	if(iconsh->Handle) N2->ImageIndex = ImageList->AddIcon(iconsh);
-	if (ExistService()) {
-		N2->Caption = "Удалить службу";
-	}
-	else {
-		N2->Caption = "Установить службу";
-	}
+	applyLangUI();
 
 	this->Constraints->MinWidth = this->Width;
 	this->Constraints->MinHeight = this->Height;
@@ -41,7 +39,7 @@ __fastcall Tfmain::Tfmain(TComponent* Owner) : TForm(Owner)
 	PanelLogin->Left = PanelContacts->Left;
 	PanelLogin->Top = PanelContacts->Top;
 
-	TrayIcon->BalloonTitle = "Менеджер удаленного доступа reVisit";
+	TrayIcon->BalloonTitle = getFullText(L_CAPTION, L_END);
 
 	try{
 		if(ExistService()){
@@ -102,19 +100,16 @@ void __fastcall Tfmain::UpdaterUITimer(TObject *Sender)
 void __fastcall Tfmain::ButtonConnectClick(TObject *Sender)
 {
 	if(!myClient.client.Length()) {
-		ShowMessage("У нас нет доступных VNC клиентов!");
+		falert->ShowMessage(getFullText(L_ABSENT_VNC, L_END));
 		return;
 	}
 	threadclient->Send(makeMessage(TMESS_LOCAL_CONNECT, 2, EditPid->Text.c_str(), EditPass->Text.c_str()));
-//	if (!StartProgram(myClient.client)){
-//		ShowMessage("Не удалось запустить VNC клиент!");
-//	}
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::Web1Click(TObject *Sender)
 {
 	if(!myClient.webpanel.Length()) {
-		ShowMessage("У нас нет информации о WEB!");
+		falert->ShowMessage(getFullText(L_ABSENT_WEB, L_END));
 		return;
 	}
 	ExecProgram(myClient.webpanel, "", false, false);
@@ -145,22 +140,18 @@ void __fastcall Tfmain::N2Click(TObject *Sender)
 	{
 		//удаление службы нужно делать от пользователя, а не от службы
 		HANDLE ntoken = GetCurrentProcessToken();
-//ShowMessage((int)ntoken);
 		bool b = SetCurrentUserThread();
-//ShowMessage((int)b);
 
 		ExecProgram("net", "stop reService", true, true);
-        Sleep(SERVICE_PAUSE_RESTART_UI + SERVICE_WAIT_CYCLE + SERVICE_WAIT_AFTER_CYCLE);
+		Sleep(SERVICE_PAUSE_RESTART_UI + SERVICE_WAIT_CYCLE + SERVICE_WAIT_AFTER_CYCLE);
 		if (ExecProgram(Application->ExeName, "-service -uninstall", true, true) ) {
 			threadclient->Send(makeMessage(TMESS_LOCAL_TERMINATE, 1, L"1"));
-			N2->Caption = "Установить службу";
+			N2->Caption = getFullText(L_INSTALL_SERVICE, L_END);
 		}
 
 		if(ntoken){
-			b = SetThreadToken(0, ntoken);
-//ShowMessage((int)b);
-			b = CloseHandle(ntoken);
-//ShowMessage((int)b);
+			SetThreadToken(0, ntoken);
+			CloseHandle(ntoken);
 		}
 	}
 }
@@ -224,13 +215,10 @@ void __fastcall Tfmain::TreeViewDblClick(TObject *Sender)
 		Contact *c = (Contact *)TreeView->Selected->Data;
 		if (c->type == "node") {
 			if(!myClient.client.Length()){
-				ShowMessage("У нас нет доступных VNC клиентов!");
+				falert->ShowMessage(getFullText(L_ABSENT_VNC, L_END));
 				return;
 			}
 			threadclient->Send(makeMessage(TMESS_LOCAL_CONN_CONTACT, 1, UnicodeString(c->id).w_str()));
-//			if (!StartProgram(myClient.client)){
-//				ShowMessage("Не удалось запустить VNC клиент!");
-//			}
 			addLog(TYPE_LOG_INFO, "пробуем подключиться");
 		}
 	}
@@ -268,7 +256,7 @@ void __fastcall Tfmain::ButtonRegisterClick(TObject *Sender)
 void __fastcall Tfmain::ButtonLoginClick(TObject *Sender)
 {
 	threadclient->Send(makeMessage(TMESS_LOCAL_LOGIN, 3,
-	EditProfileLogin->Text, EditProfilePass->Text, CheckProfileSave->Checked?L"1":L"0"));
+		EditProfileLogin->Text, EditProfilePass->Text, CheckProfileSave->Checked?L"1":L"0"));
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
@@ -315,7 +303,7 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 //			BalloonHint->ShowHint(this);
 			falert->ShowMessage(*buf);
 
-			StatusBar->SimpleText = "Уведомление: " + *buf;
+			StatusBar->SimpleText = *buf;
 			delete buf;
 			break;
 		}
@@ -476,7 +464,6 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 		}
 		case WM_VISIT_INCLNT:
 		{
-
 			UnicodeString **buf = (UnicodeString **)Msg.wParam;
 			fmanage->EditHostname->Text = *buf[0];
 			fmanage->EditUptime->Text = *buf[1];
@@ -523,6 +510,11 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 				this->Height = myOptions.Height;
 				this->Left = myOptions.Left;
 				this->Top = myOptions.Top;
+
+				applyLangUI();
+				fmanage->applyLangUI();
+				fcontact->applyLangUI();
+                falert->applyLangUI();
 
 				addLog(TYPE_LOG_INFO, "Применили опции ui");
 				break;
@@ -882,4 +874,40 @@ void __fastcall Tfmain::LabelPassChange(TObject *Sender)
     this->Tag = 1;
 }
 //---------------------------------------------------------------------------
+void Tfmain::applyLangUI()
+{
+	if (ExistService()) {
+		N2->Caption = getText(L_UNINSTALL_SERVICE);
+	}
+	else {
+		N2->Caption = getText(L_INSTALL_SERVICE);
+	}
 
+	N1->Caption = getText(L_EXIT);
+	N8->Caption = getText(L_MANAGE);
+	Web1->Caption = getText(L_WEB_PANEL);
+
+	N6->Caption = getText(L_NEW_GROUP);
+	N3->Caption = getText(L_NEW_CONT);
+	N4->Caption = getText(L_EDIT);
+	N7->Caption = getText(L_MANAGE);
+	N5->Caption = getText(L_REMOVE);
+
+	Label6->Caption = getText(L_ID);
+    Label4->Caption = getText(L_ID);
+	Label8->Caption = getText(L_LOCAL_PC);
+	Label9->Caption = getText(L_REMOTE_PC);
+	Label7->Caption = getText(L_PASSWORD);
+	Label2->Caption = getText(L_PASSWORD);
+	Label5->Caption = getText(L_PASSWORD);
+
+	Label3->Caption = getText(L_LOGIN_PROFILE);
+	CheckProfileSave->Caption = getText(L_SAVE);
+	ButtonLogin->Caption = getText(L_LOGIN);
+	ButtonConnect->Caption = getText(L_CONNECT);
+	ButtonRegister->Caption = getText(L_SIGNIN);
+
+	ButtonProfile->Caption = getText(L_PROFILE);
+	ButtonRefresh->Caption = getText(L_REFRESH);
+	ButtonLogout->Caption = getText(L_LOGOUT);
+}

@@ -174,6 +174,4 @@ UnicodeString cleanPid(UnicodeString pid);
 
 UnicodeString getJsonStringOptions();
 
-UnicodeString getLangText(int item);
-
 #endif

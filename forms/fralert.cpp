@@ -5,14 +5,15 @@
 
 #include "fralert.h"
 #include "frmain.h"
+#include "languages.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
 Tfalert *falert;
 //---------------------------------------------------------------------------
-__fastcall Tfalert::Tfalert(TComponent* Owner)
-	: TForm(Owner)
+__fastcall Tfalert::Tfalert(TComponent* Owner): TForm(Owner)
 {
+	applyLangUI();
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfalert::FormShow(TObject *Sender)
@@ -45,3 +46,7 @@ void __fastcall Tfalert::ShowMessage(String message)
 	this->Show();
 }
 //---------------------------------------------------------------------------
+void Tfalert::applyLangUI()
+{
+	Caption = getText(L_MANAGE);
+}

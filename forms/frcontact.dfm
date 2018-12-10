@@ -52,7 +52,7 @@ object fcontact: Tfcontact
     Caption = #1054#1087#1080#1089#1072#1085#1080#1077
   end
   object EditPid: TEdit
-    Left = 143
+    Left = 151
     Top = 40
     Width = 121
     Height = 21

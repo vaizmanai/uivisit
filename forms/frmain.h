@@ -136,6 +136,7 @@ private:	// User declarations
 public:		// User declarations
 	__fastcall Tfmain(TComponent* Owner);
 
+    void applyLangUI();
 	void updateTreeView();
 	void addNode(Contact *node, TTreeNode *parent);
 	void addNodes(Contact *node, TTreeNode *parent, UnicodeString filter);

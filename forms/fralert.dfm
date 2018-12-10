@@ -31,6 +31,7 @@ object falert: Tfalert
     Font.Style = []
     ParentFont = False
     Layout = tlCenter
+    WordWrap = True
     ExplicitWidth = 6
     ExplicitHeight = 23
   end
