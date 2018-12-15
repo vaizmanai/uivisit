@@ -182,24 +182,24 @@ void Tfmanage::applyLangUI()
 	ComboBox->Items->Add(getText(L_AUTH));
 	ComboBox->Items->Add(getText(L_PROXY));
 
-	Label3->Caption = getText(L_OS); //Îïåðàöèîííàÿ ñèñòåìà
-	Label2->Caption = getText(L_NAME_PC); //Èìÿ êîìïüþòåðà
-	Label1->Caption = getText(L_VERSION_VNC); //Âåðñèÿ VNC
-	Label9->Caption = getText(L_LANG); //ßçûê èíòåðôåéñà
+	Label3->Caption = getText(L_OS); //ÐžÐ¿ÐµÑ€Ð°Ñ†Ð¸Ð¾Ð½Ð½Ð°Ñ ÑÐ¸ÑÑ‚ÐµÐ¼Ð°
+	Label2->Caption = getText(L_NAME_PC); //Ð˜Ð¼Ñ ÐºÐ¾Ð¼Ð¿ÑŒÑŽÑ‚ÐµÑ€Ð°
+	Label1->Caption = getText(L_VERSION_VNC); //Ð’ÐµÑ€ÑÐ¸Ñ VNC
+	Label9->Caption = getText(L_LANG); //Ð¯Ð·Ñ‹Ðº Ð¸Ð½Ñ‚ÐµÑ€Ñ„ÐµÐ¹ÑÐ°
 
-	ButtonReVNC->Caption = getText(L_REINSTALL); //Ïåðåóñòàíîâèòü
-	ButtonUpdate->Caption = getText(L_UPDATE); //Îáíîâèòü
-	ButtonReload->Caption = getText(L_UPDATE); //Ïåðåçàïóñòèòü
-	ButtonRestart->Caption = getText(L_RESTART); //Ïåðåçàãðóçèòü
-	ButtonAddProfile->Caption = getText(L_ADD); //Äîáàâèòü
-	Label4->Caption = getText(L_EMAIL_PROFILE); //E-mail ïðîôèëÿ
-	Label5->Caption = getText(L_PASS_PROFILE); //Ïàðîëü ïðîôèëÿ
+	ButtonReVNC->Caption = getText(L_REINSTALL); //ÐŸÐµÑ€ÐµÑƒÑÑ‚Ð°Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ
+	ButtonUpdate->Caption = getText(L_UPDATE); //ÐžÐ±Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ
+	ButtonReload->Caption = getText(L_RELOAD); //ÐŸÐµÑ€ÐµÐ·Ð°Ð¿ÑƒÑÑ‚Ð¸Ñ‚ÑŒ
+	ButtonRestart->Caption = getText(L_RESTART); //ÐŸÐµÑ€ÐµÐ·Ð°Ð³Ñ€ÑƒÐ·Ð¸Ñ‚ÑŒ
+	ButtonAddProfile->Caption = getText(L_ADD); //Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ
+	Label4->Caption = getText(L_EMAIL_PROFILE); //E-mail Ð¿Ñ€Ð¾Ñ„Ð¸Ð»Ñ
+	Label5->Caption = getText(L_PASS_PROFILE); //ÐŸÐ°Ñ€Ð¾Ð»ÑŒ Ð¿Ñ€Ð¾Ñ„Ð¸Ð»Ñ
 
-	Label6->Caption = getText(L_VERSION); //Âåðñèÿ reVisit
-	Label7->Caption = getText(L_SERVER_PROXY); //Àäðåñ proxy ñåðâåðà
-	Label8->Caption = getText(L_PORT_PROXY); //Ïîðò proxy ñåðâåðà
-	ButtonProxyApply->Caption = getText(L_APPLY); //Ïðèìåíèòü
+	Label6->Caption = getText(L_VERSION); //Ð’ÐµÑ€ÑÐ¸Ñ reVisit
+	Label7->Caption = getText(L_SERVER_PROXY); //ÐÐ´Ñ€ÐµÑ proxy ÑÐµÑ€Ð²ÐµÑ€Ð°
+	Label8->Caption = getText(L_PORT_PROXY); //ÐŸÐ¾Ñ€Ñ‚ proxy ÑÐµÑ€Ð²ÐµÑ€Ð°
+	ButtonProxyApply->Caption = getText(L_APPLY); //ÐŸÑ€Ð¸Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ
 
-    ComboBox->ItemIndex = 0;
+	ComboBox->ItemIndex = 0;
 }
 
