@@ -73,7 +73,11 @@
 #define L_CREATE_ITEM               65
 #define L_ID                    	66
 #define L_PARENT                    67
-#define L_MAX_ITEMS                 68
+#define L_STATUS_REQ                68
+#define L_STATUS_CONN               69
+#define L_STATUS_DISCONNECT         70
+#define L_STATUS_ERROR              71
+#define L_MAX_ITEMS                 72
 
 
 wchar_t *languages_russian[L_MAX_ITEMS] = {
@@ -144,7 +148,11 @@ wchar_t *languages_russian[L_MAX_ITEMS] = {
 	L"Редактирование контакта",
 	L"Создание контакта",
 	L"Идентификатор",
-	L"Родительская группа" };
+	L"Родительская группа",
+	L"Попытка подключения...",
+	L"Уcпешный ответ на подключение",
+	L"Запрос на отключение",
+	L"Ошибка сети" };
 
 wchar_t *languages_english[L_MAX_ITEMS] = {
 	L"",
@@ -214,7 +222,11 @@ wchar_t *languages_english[L_MAX_ITEMS] = {
 	L"Edit item",
 	L"Create item",
 	L"ID",
-	L"Parent" };
+	L"Parent",
+	L"Attempt to connect...",
+	L"Successful request",
+	L"Request to disconnect",
+	L"Network error" };
 
 wchar_t *languages_farsi[L_MAX_ITEMS] = {
     L"",
@@ -284,7 +296,11 @@ wchar_t *languages_farsi[L_MAX_ITEMS] = {
 	L"ویرایش آیتم",
 	L"ایجاد آیتم",
 	L"شناسه",
-	L"والدین" };
+	L"والدین",
+	L"تلاش برای اتصال...",
+	L"درخواست موفقیت آمیز",
+	L"درخواست قطع ارتباط",
+	L"خطای شبکه" };
 
 #define MY_LANG_RUSSIAN	0
 #define MY_LANG_ENGLISH	1

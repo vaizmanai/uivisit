@@ -42,7 +42,8 @@ extern Options myOptions;
 #define TMESS_LOCAL_OPTIONS_UI 	 47 //
 #define TMESS_LOCAL_PROXY	 	 48 //
 #define TMESS_LOCAL_STANDART_ALR 49 //
-#define TMESS_LOCAL_MAX		   	 50 //
+#define TMESS_LOCAL_STANDART_LOG 50 //
+#define TMESS_LOCAL_MAX		   	 51 //
 
 
 void processBlank(Message message);
@@ -64,6 +65,7 @@ void processHide(Message message);
 void processOptionsUI(Message message);
 void processProxy(Message message);
 void processStandartAlert(Message message);
+void processStandartLog(Message message);
 
 Process processing[] = {
 	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},	{TMESS_BLANK, processBlank},
@@ -96,7 +98,8 @@ Process processing[] = {
 	{TMESS_LOCAL_CONT_REVERSE, processBlank},
 	{TMESS_LOCAL_OPTIONS_UI, processOptionsUI},
 	{TMESS_LOCAL_PROXY, processProxy},
-	{TMESS_LOCAL_STANDART_ALR, processStandartAlert}
+	{TMESS_LOCAL_STANDART_ALR, processStandartAlert},
+	{TMESS_LOCAL_STANDART_LOG, processStandartLog}
 
 };
 

@@ -65,7 +65,6 @@ __published:	// IDE-managed Components
 	TButton *ButtonOptionsSave;
 	TStatusBar *StatusBar;
 	TButton *OptionClear;
-	TBalloonHint *BalloonHint;
 	TMenuItem *N8;
 	TButton *cleanall;
 	TButton *reloadcom;
@@ -85,6 +84,7 @@ __published:	// IDE-managed Components
 	TMaskEdit *EditProfileLogin;
 	TLabel *Label1;
 	TLabel *Label3;
+	TLabel *Label10;
 	void __fastcall TrayIconDblClick(TObject *Sender);
 	void __fastcall UpdaterUITimer(TObject *Sender);
 	void __fastcall ButtonConnectClick(TObject *Sender);

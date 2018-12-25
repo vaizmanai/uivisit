@@ -116,6 +116,20 @@ object fmain: Tfmain
     Font.Style = []
     ParentFont = False
   end
+  object Label10: TLabel
+    Left = 8
+    Top = 399
+    Width = 241
+    Height = 36
+    Alignment = taCenter
+    AutoSize = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -24
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
   object PanelContacts: TPanel
     Left = 255
     Top = 8
@@ -532,7 +546,7 @@ object fmain: Tfmain
     Left = 736
     Top = 240
     Bitmap = {
-      494C01010300B4008C0114001400FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010300B400A00114001400FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000500000001400000001002000000000000019
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -769,12 +783,5 @@ object fmain: Tfmain
       Caption = #1059#1076#1072#1083#1080#1090#1100
       OnClick = N5Click
     end
-  end
-  object BalloonHint: TBalloonHint
-    Style = bhsStandard
-    Delay = 200
-    HideAfter = 2500
-    Left = 664
-    Top = 184
   end
 end

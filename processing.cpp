@@ -175,12 +175,9 @@ void processExec(Message message)
 
 void processStatus(Message message)
 {
-//	addLog(TYPE_LOG_INFO, "Пришел статус контакта");
-
 	Contact *c = getContact(myClient.contact, cleanPid(message.messages[0]));
 	if(c != NULL){
-		c->status = StrToInt(message.messages[1]);
-		PostMessage(getMainHandle(), WM_VISIT_SCONT, 0, (long)c);
+		PostMessage(getMainHandle(), WM_VISIT_SCONT, StrToInt(message.messages[1]), (long)c->id);
 	}
 }
 
@@ -287,6 +284,7 @@ void processStandartAlert(Message message)
 	addLog(TYPE_LOG_INFO, "Пришло стандартное сообщение");
 
 	UnicodeString *buf;
+	bool showMessage = true;
 
 	switch (StrToInt(message.messages[0])) {
 		case 1:
@@ -322,11 +320,50 @@ void processStandartAlert(Message message)
 		case 11:
 			buf = new UnicodeString(getFullText(L_ERROR_MESSAGE, L_ALERT_REG_SUCC_MESSAGE, L_END));
 			break;
+
+		case 12:
+			buf = new UnicodeString(getFullText(L_STATUS_REQ, L_END));
+			showMessage = false;
+			break;
+		case 13:
+			buf = new UnicodeString(getFullText(L_STATUS_CONN, L_END));
+			showMessage = false;
+			break;
+		case 14:
+			buf = new UnicodeString(getFullText(L_STATUS_DISCONNECT, L_END));
+			showMessage = false;
+			break;
+		case 15:
+			buf = new UnicodeString(getFullText(L_STATUS_ERROR, L_END));
+			showMessage = false;
+			break;
+
 		default:
 			buf = new UnicodeString(getFullText(L_ERROR_MESSAGE, L_ALERT_EMPTY_MESSAGE, L_END));
 			break;
 	}
 
-	PostMessage(getMainHandle(), WM_VISIT_NOTIF, 0, (long)buf);
+	PostMessage(getMainHandle(), WM_VISIT_NOTIF, showMessage, (long)buf);
 }
 
+void processStandartLog(Message message)
+{
+    addLog(TYPE_LOG_INFO, "Пришло стандартный лог");
+
+	UnicodeString *buf;
+
+	switch (StrToInt(message.messages[0])) {
+	//пробуем подключиться к серверу
+	//нет соединения с сервером
+	//пробуем подключиться к клиенту
+    //общая ошибка, детали в отчете
+//		case 1:
+//			buf = new UnicodeString(getFullText(L_ERROR_MESSAGE, L_ALERT_NETWORK_MESSAGE, L_END));
+//			break;
+//		default:
+//			buf = new UnicodeString(getFullText(L_ERROR_MESSAGE, L_ALERT_EMPTY_MESSAGE, L_END));
+//			break;
+	}
+
+	PostMessage(getMainHandle(), WM_VISIT_ST_LOG, 0, (long)buf);
+}

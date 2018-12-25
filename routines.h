@@ -56,6 +56,7 @@ UnicodeString type_log[] = {
 #define WM_VISIT_SCONT  WM_USER + 18
 #define WM_VISIT_APPLY	WM_USER + 19
 #define WM_VISIT_PROXY	WM_USER + 20
+#define WM_VISIT_ST_LOG WM_USER + 21
 
 typedef struct OptionsUI {
 	int Width;
@@ -167,6 +168,8 @@ Contact* getContact(Contact *first, UnicodeString pid);
 Contact* delContact(Contact *first, int id);
 
 void swap(Contact *a, Contact *b);
+
+void unbindNodes(Contact *first);
 
 void sortNodes(Contact *first);
 

@@ -199,6 +199,7 @@ void Tfmain::addNodes(Contact *contact, TTreeNode *parent, UnicodeString filter)
 //---------------------------------------------------------------------------
 void Tfmain::updateTreeView()
 {
+	unbindNodes(myClient.contact);
 	TreeView->Items->Clear();
 	sortNodes(myClient.contact);
 	addNodes(myClient.contact, NULL, EditFilter->Text);
@@ -296,14 +297,19 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 		case WM_VISIT_NOTIF:
 		{
 			UnicodeString *buf = (UnicodeString *)Msg.lParam;
-//			Application->MessageBoxW(buf->w_str(), L"Уведомление", 0);
 
-//			BalloonHint->Title = "Уведомление";
-//			BalloonHint->Description = *buf;
-//			BalloonHint->ShowHint(this);
-			falert->ShowMessage(*buf);
+			if(Msg.wParam) {
+				falert->ShowMessage(*buf);
+			}
 
 			StatusBar->SimpleText = *buf;
+			delete buf;
+			break;
+		}
+		case WM_VISIT_ST_LOG:
+		{
+			UnicodeString *buf = (UnicodeString *)Msg.lParam;
+            StatusBar->SimpleText = *buf;
 			delete buf;
 			break;
 		}
@@ -341,6 +347,7 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 			PanelContacts->Hide();
 			fmanage->Close();
 			fcontact->Close();
+            unbindNodes(myClient.contact);
 			TreeView->Items->Clear();
 			EditProfileLogin->Text = "";
 			EditProfilePass->Text = "";
@@ -431,17 +438,20 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 		}
 		case WM_VISIT_SCONT:
 		{
-			Contact *c = (Contact *)Msg.lParam;
-			TTreeNode *p = (TTreeNode*)c->data;
-			if (p) {
-				if (c->type != "fold") {
-					if (c->status) {
-						p->ImageIndex = 2;
-						p->SelectedIndex = 2;
-					}
-					else {
-						p->ImageIndex = 1;
-						p->SelectedIndex = 1;
+			Contact *c = getContact(myClient.contact, (int)Msg.lParam);
+			if (c) {
+				c->status = Msg.wParam;
+				TTreeNode *p = (TTreeNode*)c->data;
+				if (p) {
+					if (c->type != "fold") {
+						if (c->status) {
+							p->ImageIndex = 2;
+							p->SelectedIndex = 2;
+						}
+						else {
+							p->ImageIndex = 1;
+							p->SelectedIndex = 1;
+						}
 					}
 				}
 			}
@@ -548,6 +558,7 @@ void __fastcall Tfmain::ButtonLogoutClick(TObject *Sender)
 {
 	PanelLogin->Show();
 	PanelContacts->Hide();
+	unbindNodes(myClient.contact);
 	TreeView->Items->Clear();
     CheckProfileSave->Checked = false;
 	EditProfileLogin->Text = "";

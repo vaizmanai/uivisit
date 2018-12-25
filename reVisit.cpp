@@ -27,7 +27,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 
 	if(wcsstr(attr, L"help"))
 	{
-		UnicodeString help = "ƒоступные аргументы дл¤ запуска:\n\n"
+		UnicodeString help = "Доступные аргументы дл¤ запуска:\n\n"
 								"   -clean-all - удалить настройки\n"
 								"   -reload - перезапустить программу\n"
 								"   -close - закрыть экземпл¤ры программы\n"

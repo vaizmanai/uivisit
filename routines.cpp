@@ -20,10 +20,10 @@ void addLog(int type, UnicodeString message)
 	UnicodeString *buf = new UnicodeString(type_log[type] + ": " + message);
 	PostMessage(getMainHandle(), WM_VISIT_LOG, 0, (long)buf);
 
-	if (type < TYPE_LOG_DETAIL) {
-		buf = new UnicodeString(type_log[type] + ": " + message);
-		PostMessage(getMainHandle(), WM_VISIT_STATUS, 0, (long)buf);
-	}
+//	if (type < TYPE_LOG_DETAIL) {
+//		buf = new UnicodeString(type_log[type] + ": " + message);
+//		PostMessage(getMainHandle(), WM_VISIT_STATUS, 0, (long)buf);
+//	}
 }
 
 Message makeMessage(int type, int count_poles, ...)
@@ -416,6 +416,19 @@ Contact* delContact(Contact *first, int id)
 	return r;
 }
 
+void unbindNodes(Contact *first)
+{
+	while (first != NULL) {
+		first->data = 0;
+
+		if (first->inner) {
+			unbindNodes(first->inner);
+		}
+
+		first = first->next;
+	}
+}
+
 void sortNodes(Contact *first)
 {
 	while (first != NULL) {
@@ -424,7 +437,13 @@ void sortNodes(Contact *first)
 		while (a != NULL) {
 			if ( a->caption < b->caption ) {
 				swapNodes(b, a);
-            }
+			}
+			if (a->inner != NULL) {
+				sortNodes(a->inner);
+			}
+			if (b->inner != NULL) {
+				sortNodes(b->inner);
+			}
 			a = (*a).next;
 		}
 		first = (*b).next;
