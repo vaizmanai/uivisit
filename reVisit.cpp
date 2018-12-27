@@ -30,7 +30,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 		UnicodeString help = "Доступные аргументы дл¤ запуска:\n\n"
 								"   -clean-all - удалить настройки\n"
 								"   -reload - перезапустить программу\n"
-								"   -close - закрыть экземпл¤ры программы\n"
+								"   -close - закрыть экземпляры программы\n"
 								"   -extract - распаковка коммуникатора\n"
 								"   -server address - задать адрес альтернативного сервера\n"
 								"   -password - задать пароль\n"

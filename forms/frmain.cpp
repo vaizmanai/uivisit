@@ -479,11 +479,15 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 			fmanage->EditUptime->Text = *buf[1];
 			fmanage->EditVersion->Text = *buf[2];
 
-			fmanage->ListVNC->ItemIndex = Msg.lParam;
-			fmanage->ButtonReVNC->Enabled = true;
-			fmanage->ButtonUpdate->Enabled = true;
-			fmanage->ButtonReload->Enabled = true;
-			fmanage->ButtonRestart->Enabled = true;
+			if(fmanage->contact || ExistService()){
+				fmanage->ListVNC->ItemIndex = Msg.lParam;
+				fmanage->ButtonReVNC->Enabled = true;
+				fmanage->ButtonUpdate->Enabled = true;
+				fmanage->ButtonReload->Enabled = true;
+				fmanage->ButtonRestart->Enabled = true;
+			}else{
+				fmanage->ListVNC->Clear();
+			}
 
             delete buf;
 			break;
