@@ -152,7 +152,11 @@ void processContacts(Message message)
 	UnicodeString contacts = coder->URLDecode(message.messages[0]);
 	coder->Free();
 
-	myClient.contact = parseContact(contacts);
+	while(contacts.Pos("\\") > 0) {
+		contacts.Delete(contacts.Pos("\\"), 1);
+	}
+
+	myClient.contact = parseContact(&contacts);
 
 	PostMessage(getMainHandle(), WM_VISIT_UPDATE, 0, 0);
 }

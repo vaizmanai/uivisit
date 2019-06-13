@@ -159,7 +159,7 @@ void CloseVisits();
 
 bool SetCurrentUserThread();
 
-Contact* parseContact(UnicodeString &text);
+Contact* parseContact(UnicodeString *text);
 
 Contact* getContact(Contact *first, int id);
 

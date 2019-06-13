@@ -274,14 +274,15 @@ bool SetCurrentUserThread()
 	return(_res);
 }
 
-Contact* parseContact(UnicodeString &p)
+Contact* parseContact(UnicodeString *p)
 {
 	Contact *contact = new Contact;
 	contact->status = 0;
 
-	TJSONObject *json = (TJSONObject*) TJSONObject::ParseJSONValue(p);
+	TJSONObject *json = (TJSONObject*) TJSONObject::ParseJSONValue(*p);
 	if(!json) {
-	   return contact;
+		delete contact;
+		return NULL;
 	}
 
 	__try {
@@ -297,27 +298,32 @@ Contact* parseContact(UnicodeString &p)
 		TJSONPair *id = json->Get("Id");
 		contact->id = StrToInt(id->JsonValue->Value());
 
+        TJSONPair *inner = json->Get("Inner");
+		UnicodeString innerv = inner->JsonValue->ToString();
+		if (innerv != "null") {
+			contact->inner = parseContact(&innerv);
+		}
+		else {
+			contact->inner = NULL;
+		}
+
 		TJSONPair *next = json->Get("Next");
-		String nextv = next->JsonValue->ToString();
+		UnicodeString nextv = next->JsonValue->ToString();
+
 		if (nextv != "null") {
-			contact->next = parseContact(nextv);
+			contact->next = parseContact(&nextv);
 		}
 		else{
 			contact->next = NULL;
 		}
 
-		TJSONPair *inner = json->Get("Inner");
-		String innerv = inner->JsonValue->ToString();
-		if (innerv != "null") {
-			contact->inner = parseContact(innerv);
-		}
-		else {
-			contact->inner = NULL;
-		}
 	}
-	__finally {
-		json->Free();
+	catch(const Exception& e) {
+		delete contact;
+		contact = NULL;
 	}
+
+	json->Free();
 
 	return contact;
 }
