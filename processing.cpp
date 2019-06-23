@@ -23,6 +23,7 @@ void processInfo(Message message)
 	if (message.messages[0].Length() && message.messages[1].Length()) {
 		myClient.pid = message.messages[0];
 		myClient.pass = message.messages[1];
+		myClient.token = message.messages[7];
 	}
 	myClient.version = message.messages[2];
 	myClient.webpanel = message.messages[3];

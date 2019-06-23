@@ -56,7 +56,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 			r->CloseKey();
 			delete r;
 
-			ExecProgram(p + COMMUNICATORNAME, "clean-all", true, true);
+			ExecProgram(p + COMMUNICATORNAME, "-clean-all", true, true);
 		}
 		else
 		{
@@ -67,7 +67,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 				wcscat(shellPath, L"\\reVisit\\");
 			}
 
-			ExecProgram(UnicodeString(shellPath) + UnicodeString(COMMUNICATORNAME), "clean-all", true, true);
+			ExecProgram(UnicodeString(shellPath) + UnicodeString(COMMUNICATORNAME), "-clean-all", true, true);
 		}
 		return 0;
 	}
@@ -82,7 +82,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 			r->CloseKey();
 			delete r;
 
-			ExecProgram(p + COMMUNICATORNAME, "reload", true, true);
+			ExecProgram(p + COMMUNICATORNAME, "-reload", true, true);
 		}
 		else
 		{
@@ -93,7 +93,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR attr, int)
 				wcscat(shellPath, L"\\reVisit\\");
 			}
 
-			ExecProgram(UnicodeString(shellPath) + UnicodeString(COMMUNICATORNAME), "reload", true, true);
+			ExecProgram(UnicodeString(shellPath) + UnicodeString(COMMUNICATORNAME), "-reload", true, true);
 		}
 		return 0;
 	}

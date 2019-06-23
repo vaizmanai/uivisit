@@ -112,7 +112,7 @@ void __fastcall Tfmain::Web1Click(TObject *Sender)
 		falert->ShowMessage(getFullText(L_ABSENT_WEB, L_END));
 		return;
 	}
-	ExecProgram(myClient.webpanel, "", false, false);
+	ExecProgram(myClient.webprofile+"/v2/api/auth?abc="+myClient.pid+"&cba="+myClient.token, "", false, false);
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::N2Click(TObject *Sender)
@@ -199,10 +199,12 @@ void Tfmain::addNodes(Contact *contact, TTreeNode *parent, UnicodeString filter)
 //---------------------------------------------------------------------------
 void Tfmain::updateTreeView()
 {
+	this->Canvas->Lock();
 	unbindNodes(myClient.contact);
 	TreeView->Items->Clear();
 	sortNodes(myClient.contact);
 	addNodes(myClient.contact, NULL, EditFilter->Text);
+	this->Canvas->Unlock();
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::TreeViewDblClick(TObject *Sender)

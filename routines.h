@@ -84,6 +84,7 @@ typedef struct Contact {
 typedef struct {
 	UnicodeString pid;
 	UnicodeString pass;
+	UnicodeString token;
 	UnicodeString version;
 	UnicodeString webpanel; //наша веб морда
 	UnicodeString webprofile; //веб портал профиля
@@ -101,6 +102,7 @@ typedef struct {
 	void clean(){
 		this->pid = "";
 		this->pass = "";
+		this->token = "";
 		this->manage = "";
 		this->contact = NULL;
 		this->mainEnabling = true;
