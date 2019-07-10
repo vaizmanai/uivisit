@@ -73,13 +73,14 @@ void __fastcall Tfmain::TrayIconDblClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::UpdaterUITimer(TObject *Sender)
 {
+	UnicodeString brand = " ИТ-аутсорсинговая компания «БИТП»";
 	if(myClient.version != "" && myClient.version != "0"){
-		Caption = "reVisit " + myClient.version;
+		Caption = "reVisit " + myClient.version + brand;
 	}
 	else{
-		Caption = "reVisit";
+		Caption = "reVisit" + brand;
 	}
-	LabelVersion->Caption = Caption;
+//	LabelVersion->Caption = Caption;
 
 	if (myClient.hide == "1") {
 		LabelPid->Text = "XX:XX:XX:XX";
@@ -883,7 +884,7 @@ void __fastcall Tfmain::FormResize(TObject *Sender)
 	TreeView->Height = ButtonLogout->Top - TreeView->Top - padding;
 
 	PanelCredentials->Left = (PanelLogin->Width - PanelCredentials->Width) / 2;
-    PanelCredentials->Top = (PanelLogin->Height - PanelCredentials->Height) / 2;
+//    PanelCredentials->Top = (PanelLogin->Height - PanelCredentials->Height) / 2;
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::LabelPassChange(TObject *Sender)

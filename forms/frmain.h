@@ -26,6 +26,7 @@
 #include <Vcl.ImgList.hpp>
 #include <direct.h>
 #include <Vcl.ComCtrls.hpp>
+#include <Vcl.Imaging.pngimage.hpp>
 //---------------------------------------------------------------------------
 class Tfmain : public TForm
 {
@@ -43,7 +44,6 @@ __published:	// IDE-managed Components
 	TButton *ButtonConnect;
 	TMemo *MemoLog;
 	TTimer *UpdaterUI;
-	TLabel *LabelVersion;
 	TMenuItem *Web1;
 	TMenuItem *N2;
 	TImageList *ImageList;
@@ -85,6 +85,7 @@ __published:	// IDE-managed Components
 	TLabel *Label1;
 	TLabel *Label3;
 	TLabel *Label10;
+	TImage *Image1;
 	void __fastcall TrayIconDblClick(TObject *Sender);
 	void __fastcall UpdaterUITimer(TObject *Sender);
 	void __fastcall ButtonConnectClick(TObject *Sender);
