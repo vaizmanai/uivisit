@@ -4,8 +4,8 @@ object fmanage: Tfmanage
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsDialog
   Caption = #1059#1087#1088#1072#1074#1083#1077#1085#1080#1077
-  ClientHeight = 258
-  ClientWidth = 1011
+  ClientHeight = 269
+  ClientWidth = 1335
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,8 +20,8 @@ object fmanage: Tfmanage
   PixelsPerInch = 96
   TextHeight = 13
   object ButtonRefresh: TButton
-    Left = 895
-    Top = 12
+    Left = 1079
+    Top = 8
     Width = 97
     Height = 25
     Caption = #1047#1072#1087#1088#1086#1089#1080#1090#1100
@@ -33,7 +33,7 @@ object fmanage: Tfmanage
     Left = 159
     Top = 8
     Width = 178
-    Height = 241
+    Height = 252
     BevelKind = bkFlat
     BevelOuter = bvNone
     Ctl3D = True
@@ -110,7 +110,7 @@ object fmanage: Tfmanage
     Left = 343
     Top = 8
     Width = 178
-    Height = 241
+    Height = 252
     BevelKind = bkFlat
     BevelOuter = bvNone
     Ctl3D = True
@@ -131,7 +131,6 @@ object fmanage: Tfmanage
       Width = 143
       Height = 21
       TabOrder = 0
-      Text = 'ListVNC'
     end
     object ButtonReVNC: TButton
       Left = 64
@@ -178,7 +177,7 @@ object fmanage: Tfmanage
     Left = 527
     Top = 8
     Width = 178
-    Height = 241
+    Height = 252
     BevelKind = bkFlat
     BevelOuter = bvNone
     Ctl3D = True
@@ -231,7 +230,7 @@ object fmanage: Tfmanage
     Left = 7
     Top = 8
     Width = 146
-    Height = 242
+    Height = 252
     AutoComplete = False
     Style = csSimple
     DoubleBuffered = True
@@ -249,13 +248,14 @@ object fmanage: Tfmanage
       #1054#1073#1097#1080#1077' '#1076#1072#1085#1085#1099#1077
       #1059#1087#1088#1072#1074#1083#1077#1085#1080#1077
       #1040#1074#1090#1086#1088#1080#1079#1072#1094#1080#1103
-      #1055#1088#1086#1082#1089#1080)
+      #1055#1088#1086#1082#1089#1080
+      #1041#1077#1079#1086#1087#1072#1089#1085#1086#1089#1090#1100)
   end
   object Panel4: TPanel
     Left = 711
     Top = 8
     Width = 178
-    Height = 241
+    Height = 252
     BevelKind = bkFlat
     BevelOuter = bvNone
     Ctl3D = True
@@ -302,7 +302,28 @@ object fmanage: Tfmanage
       TabOrder = 2
     end
   end
+  object Panel5: TPanel
+    Left = 895
+    Top = 8
+    Width = 178
+    Height = 252
+    BevelKind = bkFlat
+    BevelOuter = bvNone
+    Ctl3D = True
+    ParentCtl3D = False
+    ShowCaption = False
+    TabOrder = 6
+    object RandomPassword: TCheckBox
+      Left = 16
+      Top = 21
+      Width = 137
+      Height = 17
+      Caption = #1053#1077' '#1089#1086#1093#1088#1072#1085#1103#1090#1100' '#1087#1072#1088#1086#1083#1100
+      TabOrder = 0
+    end
+  end
   object ApplicationEvents: TApplicationEvents
+    OnIdle = ApplicationEventsIdle
     OnShortCut = ApplicationEventsShortCut
     Left = 64
     Top = 160

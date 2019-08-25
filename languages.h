@@ -65,20 +65,21 @@
 #define L_APPLY						57
 #define L_ALERT						58
 #define L_CAPTION_ITEM              59
-#define L_SAVE                      60
-#define L_CREATE                    61
-#define L_EDIT_GROUP                62
-#define L_CREATE_GROUP              63
-#define L_EDIT_ITEM                 64
-#define L_CREATE_ITEM               65
-#define L_ID                    	66
-#define L_PARENT                    67
-#define L_STATUS_REQ                68
-#define L_STATUS_CONN               69
-#define L_STATUS_DISCONNECT         70
-#define L_STATUS_ERROR              71
-#define L_MAX_ITEMS                 72
+#define L_CREATE                    60
+#define L_EDIT_GROUP                61
+#define L_CREATE_GROUP              62
+#define L_EDIT_ITEM                 63
+#define L_CREATE_ITEM               64
+#define L_ID                    	65
+#define L_PARENT                    66
+#define L_STATUS_REQ                67
+#define L_STATUS_CONN               68
+#define L_STATUS_DISCONNECT         69
+#define L_STATUS_ERROR              70
+#define L_SECURITY                  71
+#define L_RANDOM_PASSWORD           72
 
+#define L_MAX_ITEMS                 73
 
 wchar_t *languages_russian[L_MAX_ITEMS] = {
 	L"",
@@ -141,8 +142,7 @@ wchar_t *languages_russian[L_MAX_ITEMS] = {
 	L"Применить",
 	L"Уведомление",
 	L"Название",
-	L"Сохранить",                      //60
-	L"Создать",
+	L"Создать",                        //60
 	L"Редактирование группы",
 	L"Создание группы",
 	L"Редактирование контакта",
@@ -152,7 +152,9 @@ wchar_t *languages_russian[L_MAX_ITEMS] = {
 	L"Попытка подключения...",
 	L"Уcпешный ответ на подключение",
 	L"Запрос на отключение",
-	L"Ошибка сети" };
+	L"Ошибка сети",
+	L"Безопасность",
+	L"Не сохранять пароль" };
 
 wchar_t *languages_english[L_MAX_ITEMS] = {
 	L"",
@@ -215,8 +217,7 @@ wchar_t *languages_english[L_MAX_ITEMS] = {
 	L"Apply",
 	L"Message",
 	L"Caption",
-	L"Save",                      //60
-	L"Create",
+	L"Create",                     //60
 	L"Edit group",
 	L"Create group",
 	L"Edit item",
@@ -226,7 +227,9 @@ wchar_t *languages_english[L_MAX_ITEMS] = {
 	L"Attempt to connect...",
 	L"Successful request",
 	L"Request to disconnect",
-	L"Network error" };
+	L"Network error",
+	L"Security",
+	L"Random password" };
 
 wchar_t *languages_farsi[L_MAX_ITEMS] = {
     L"",
@@ -289,7 +292,6 @@ wchar_t *languages_farsi[L_MAX_ITEMS] = {
 	L"درخواست دادن",
 	L"پیام",
 	L"عنوان",
-	L"صرفه جویی",
 	L"ايجاد كردن",
 	L"ویرایش گروه",
 	L"ایجاد گروه",
@@ -300,7 +302,9 @@ wchar_t *languages_farsi[L_MAX_ITEMS] = {
 	L"تلاش برای اتصال...",
 	L"درخواست موفقیت آمیز",
 	L"درخواست قطع ارتباط",
-	L"خطای شبکه" };
+	L"خطای شبکه",
+	L"Security",
+	L"Random password" };
 
 #define MY_LANG_RUSSIAN	0
 #define MY_LANG_ENGLISH	1

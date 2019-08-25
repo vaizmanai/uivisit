@@ -196,7 +196,7 @@ void processListVNC(Message message)
 
 void processInfoAnswer(Message message)
 {
-//	addLog(TYPE_LOG_INFO, "Пришла информация о контакте");
+	addLog(TYPE_LOG_INFO, "Пришла информация о контакте");
 
 	UnicodeString **buf = new UnicodeString*[3];
 
@@ -265,7 +265,10 @@ void processOptionsUI(Message message)
 	if(pair)
 		myOptions.Lang = StrToInt(pair->JsonValue->Value());
 	else
-        applyLangBySystem();
+		applyLangBySystem();
+
+	pair = json->Get("RandomPassword");
+	if(pair) myOptions.RandomPassword = StrToInt(pair->JsonValue->Value());
 
 	json->Free();
 

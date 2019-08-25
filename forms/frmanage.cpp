@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #include <vcl.h>
 #pragma hdrstop
@@ -19,26 +19,31 @@ __fastcall Tfmanage::Tfmanage(TComponent* Owner) : TForm(Owner)
 	Panel2->Left = Panel1->Left;
 	Panel3->Left = Panel1->Left;
 	Panel4->Left = Panel1->Left;
+	Panel5->Left = Panel1->Left;
 	ClientWidth = Panel1->Width + Panel1->Left + 8;
 	Panel2->Hide();
 	Panel3->Hide();
 	Panel4->Hide();
+	Panel5->Hide();
 	ListLanguages->Enabled = false;
 	ListLanguages->Clear();
 	ButtonProxyApply->Enabled = false;
+	RandomPassword->Checked = false;
     applyLangUI();
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmanage::ButtonRefreshClick(TObject *Sender)
 {
-	if (contact != NULL) {
+	fmain->threadclient->Send(makeMessage(TMESS_LOCAL_LISTVNC, 0));
+	if (contact != NULL) {  // настройки удаленного клиента
 		fmain->threadclient->Send(makeMessage(TMESS_LOCAL_INFO_CONTACT, 1, IntToStr(contact->id)));
+		RandomPassword->Visible = false;
 	}
 	else
 	{
 		ListLanguages->Enabled = true;
 		ButtonProxyApply->Enabled = true;
-        int i = 0;
+		int i = 0;
 		while(languages[i] != NULL){
 			ListLanguages->Items->Add(UnicodeString(languages[i][L_NAME]));
 			i++;
@@ -50,7 +55,7 @@ void __fastcall Tfmanage::ButtonRefreshClick(TObject *Sender)
 		fmain->threadclient->Send(makeMessage(TMESS_LOCAL_MYINFO, 0));
 	}
 
-   	fmain->threadclient->Send(makeMessage(TMESS_LOCAL_PROXY, 0));
+	fmain->threadclient->Send(makeMessage(TMESS_LOCAL_PROXY, 0));
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmanage::ButtonReVNCClick(TObject *Sender)
@@ -77,9 +82,11 @@ void __fastcall Tfmanage::FormClose(TObject *Sender, TCloseAction &Action)
 	EditProxyServer->Text = "";
     EditProxyPort->Text = "";
 	ListVNC->ItemIndex = -1;
+	ListVNC->Enabled = false;
 	ListLanguages->Enabled = false;
 	ListLanguages->Clear();
-    ButtonProxyApply->Enabled = false;
+	ButtonProxyApply->Enabled = false;
+	RandomPassword->Visible = true;
 	contact = NULL;
 }
 //---------------------------------------------------------------------------
@@ -134,6 +141,7 @@ void __fastcall Tfmanage::ComboBoxChange(TObject *Sender)
 	Panel2->Hide();
 	Panel3->Hide();
 	Panel4->Hide();
+	Panel5->Hide();
 
 	switch (ComboBox->ItemIndex) {
 		case 0:
@@ -147,6 +155,9 @@ void __fastcall Tfmanage::ComboBoxChange(TObject *Sender)
 			break;
 		case 3:
 			Panel4->Show();
+			break;
+		case 4:
+			Panel5->Show();
 			break;
 	}
 
@@ -181,6 +192,7 @@ void Tfmanage::applyLangUI()
 	ComboBox->Items->Add(getText(L_MANAGE));
 	ComboBox->Items->Add(getText(L_AUTH));
 	ComboBox->Items->Add(getText(L_PROXY));
+	ComboBox->Items->Add(getText(L_SECURITY));
 
 	Label3->Caption = getText(L_OS); //Операционная система
 	Label2->Caption = getText(L_NAME_PC); //Имя компьютера
@@ -200,6 +212,19 @@ void Tfmanage::applyLangUI()
 	Label8->Caption = getText(L_PORT_PROXY); //Порт proxy сервера
 	ButtonProxyApply->Caption = getText(L_APPLY); //Применить
 
+	RandomPassword->Caption = getText(L_RANDOM_PASSWORD); //Применить
+
 	ComboBox->ItemIndex = 0;
 }
+//---------------------------------------------------------------------------
+void __fastcall Tfmanage::ApplicationEventsIdle(TObject *Sender, bool &Done)
+{
+	if ( myOptions.RandomPassword != RandomPassword->Checked ) {
+		myOptions.RandomPassword = RandomPassword->Checked;
+		if(myOptions.RandomPassword){
+			fmain->threadclient->Send(makeMessage(TMESS_LOCAL_INFO, 1, L"random"));
+		}
+	}
+}
+//---------------------------------------------------------------------------
 

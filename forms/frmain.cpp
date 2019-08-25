@@ -360,6 +360,7 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 		}
 		case WM_VISIT_MCONT:
 		{
+			TreeView->Canvas->Lock();
 			Contact *c = (Contact *)Msg.lParam;
 			TTreeNode *p = (TTreeNode*)c->data;
 			TTreeNode *n = NULL; //новый узел
@@ -382,10 +383,12 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 			MoveTreeViewBranch(p, n);
 
 			TreeView->Items->Delete(p);
+            TreeView->Canvas->Unlock();
 			break;
 		}
 		case WM_VISIT_CONT:
 		{
+			TreeView->Canvas->Lock();
 			Contact *c = (Contact *)Msg.lParam;
 			TTreeNode *p = (TTreeNode*)c->data;
 
@@ -426,6 +429,7 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 				c->data = p;
 				p->Data = c;
 			}
+            TreeView->Canvas->Unlock();
 			break;
 		}
 		case WM_VISIT_DCONT:
@@ -483,12 +487,11 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 
 			if(fmanage->contact || ExistService()){
 				fmanage->ListVNC->ItemIndex = Msg.lParam;
+				fmanage->ListVNC->Enabled = true;
 				fmanage->ButtonReVNC->Enabled = true;
 				fmanage->ButtonUpdate->Enabled = true;
 				fmanage->ButtonReload->Enabled = true;
 				fmanage->ButtonRestart->Enabled = true;
-			}else{
-				fmanage->ListVNC->Clear();
 			}
 
             delete buf;
@@ -530,8 +533,11 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 				applyLangUI();
 				fmanage->applyLangUI();
 				fcontact->applyLangUI();
-                falert->applyLangUI();
-
+				falert->applyLangUI();
+				fmanage->RandomPassword->Checked = myOptions.RandomPassword;
+				if (myOptions.RandomPassword) {
+					fmain->threadclient->Send(makeMessage(TMESS_LOCAL_INFO, 1, L"random"));
+				}
 				addLog(TYPE_LOG_INFO, "Применили опции ui");
 				break;
 			}
@@ -544,6 +550,7 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 //---------------------------------------------------------------------------
 void Tfmain::MoveTreeViewBranch(TTreeNode *src, TTreeNode *dst)
 {
+	TreeView->Canvas->Lock();
 	TTreeNode *n = src->getFirstChild();
 
 	while(n){
@@ -558,6 +565,7 @@ void Tfmain::MoveTreeViewBranch(TTreeNode *src, TTreeNode *dst)
 		p->SelectedIndex = n->SelectedIndex;
 		n = n->getNextSibling();
 	}
+    TreeView->Canvas->Unlock();
 }
 //---------------------------------------------------------------------------
 void __fastcall Tfmain::ButtonLogoutClick(TObject *Sender)

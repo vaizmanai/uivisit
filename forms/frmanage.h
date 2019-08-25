@@ -53,6 +53,8 @@ __published:	// IDE-managed Components
 	TEdit *EditProxyPort;
 	TComboBox *ListLanguages;
 	TLabel *Label9;
+	TPanel *Panel5;
+	TCheckBox *RandomPassword;
 	void __fastcall ButtonRefreshClick(TObject *Sender);
 	void __fastcall ButtonReVNCClick(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
@@ -65,10 +67,10 @@ __published:	// IDE-managed Components
 	void __fastcall ButtonAddProfileClick(TObject *Sender);
 	void __fastcall ButtonProxyApplyClick(TObject *Sender);
 	void __fastcall ListLanguagesChange(TObject *Sender);
-
-
+	void __fastcall ApplicationEventsIdle(TObject *Sender, bool &Done);
 
 private:	// User declarations
+
 public:		// User declarations
 	__fastcall Tfmanage(TComponent* Owner);
 

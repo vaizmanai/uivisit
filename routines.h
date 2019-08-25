@@ -64,7 +64,8 @@ typedef struct OptionsUI {
 	int Left;
 	int Top;
 	bool TrayIcon;
-    int Lang;
+	int Lang;
+    bool RandomPassword;
 } Options;
 
 typedef struct Contact {

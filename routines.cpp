@@ -482,6 +482,7 @@ UnicodeString getJsonStringOptions()
 	options->AddPair( new TJSONPair("Top", myOptions.Top) );
 	options->AddPair( new TJSONPair("TrayIcon", (int)myOptions.TrayIcon) );
 	options->AddPair( new TJSONPair("Lang", (int)myOptions.Lang) );
+	options->AddPair( new TJSONPair("RandomPassword", (int)myOptions.RandomPassword) );
 
 	UnicodeString result = options->ToString();
 	options->Free();
