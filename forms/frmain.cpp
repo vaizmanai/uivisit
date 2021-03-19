@@ -429,21 +429,24 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 				c->data = p;
 				p->Data = c;
 			}
-            TreeView->Canvas->Unlock();
+			TreeView->Canvas->Unlock();
 			break;
 		}
 		case WM_VISIT_DCONT:
 		{
+			TreeView->Canvas->Lock();
 			Contact *c = (Contact *)Msg.lParam;
 			TTreeNode *p = (TTreeNode*)c->data;
 			if (p) {
 				p->Delete();
 				myClient.contact = delContact(myClient.contact, c->id);
 			}
+			TreeView->Canvas->Unlock();
 			break;
 		}
 		case WM_VISIT_SCONT:
 		{
+			TreeView->Canvas->Lock();
 			Contact *c = getContact(myClient.contact, (int)Msg.lParam);
 			if (c) {
 				c->status = Msg.wParam;
@@ -461,6 +464,7 @@ void __fastcall Tfmain::ApplicationEventsMessage(tagMSG &Msg, bool &Handled)
 					}
 				}
 			}
+            TreeView->Canvas->Unlock();
 			break;
 		}
 		case WM_VISIT_IVNC:

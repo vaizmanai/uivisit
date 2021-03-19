@@ -58,14 +58,16 @@ Message parseMessage(UnicodeString messages)
 
 	__try {
 		TJSONPair *TMessage = json->Get("TMessage");
+
 		message.type = StrToInt(TMessage->JsonValue->Value());
 
 		TJSONArray *Messages = (TJSONArray*)json->Get( "Messages" )->JsonValue;
 		message.count_poles = Messages->Size();
-		for(int i = 0; i < Messages->Size(); i++) {
+		for(int i = 0; i < Messages->Count; i++) {
 			message.messages[i] = Messages->Items[i]->Value();
 		}
 
+		int b = 0;
 	}
 	__finally {
 		json->Free();
